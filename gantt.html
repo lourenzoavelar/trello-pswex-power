@@ -2,134 +2,851 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://p.trellocdn.com/power-up.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f4f5f7; }
-    .container { max-width: 1400px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.12); }
-    h1 { color: #172b4d; margin: 0 0 20px 0; }
-    .controls { margin-bottom: 20px; padding: 15px; background: #f4f5f7; border-radius: 5px; }
-    .list-selector { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
-    .list-checkbox { display: flex; align-items: center; gap: 5px; padding: 5px 10px; background: white; border-radius: 3px; cursor: pointer; }
-    .list-checkbox input { cursor: pointer; }
-    .gantt-container { overflow-x: auto; margin-top: 20px; }
-    .gantt-header { display: flex; border-bottom: 2px solid #ddd; padding-bottom: 10px; margin-bottom: 10px; min-width: 1200px; }
-    .gantt-labels { width: 250px; flex-shrink: 0; font-weight: 600; color: #172b4d; }
-    .gantt-timeline { flex: 1; display: flex; position: relative; }
-    .timeline-header { display: flex; width: 100%; }
-    .timeline-day { flex: 1; text-align: center; font-size: 12px; color: #5e6c84; padding: 5px; border-left: 1px solid #e5e5e5; }
-    .gantt-row { display: flex; min-height: 40px; border-bottom: 1px solid #f0f0f0; align-items: center; min-width: 1200px; }
-    .gantt-row:hover { background: #f9f9f9; }
-    .row-label { width: 250px; flex-shrink: 0; padding: 8px; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .row-timeline { flex: 1; position: relative; height: 100%; display: flex; align-items: center; }
-    .gantt-bar { position: absolute; height: 24px; border-radius: 3px; padding: 0 8px; color: white; font-size: 12px; display: flex; align-items: center; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.2); overflow: hidden; white-space: nowrap; }
-    .gantt-bar:hover { opacity: 0.9; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-    .no-data { text-align: center; padding: 40px; color: #5e6c84; }
-    .loading { text-align: center; padding: 40px; color: #5e6c84; }
+    :root {
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: rgba(30, 41, 59, 0.7);
+      --bg-hover: rgba(51, 65, 85, 0.5);
+      --border-color: rgba(148, 163, 184, 0.12);
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --today-color: #ef4444;
+      --glass-bg: rgba(15, 23, 42, 0.6);
+      --glass-blur: 16px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container {
+      max-width: 1600px;
+      margin: 0 auto;
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header h1 .icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    /* Controls Panel */
+    .controls {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+
+    .controls-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .controls-header strong {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .controls-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+
+    .btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .list-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .list-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 13px;
+      color: var(--text-secondary);
+      user-select: none;
+    }
+
+    .list-chip:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .list-chip.checked {
+      background: rgba(59, 130, 246, 0.15);
+      border-color: var(--accent);
+      color: var(--text-primary);
+    }
+
+    .list-chip input { display: none; }
+
+    .list-chip .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .list-chip .count {
+      background: rgba(148, 163, 184, 0.15);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .list-chip.checked .count {
+      background: rgba(59, 130, 246, 0.2);
+      color: var(--accent);
+    }
+
+    /* Zoom Controls */
+    .zoom-controls {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 3px;
+    }
+
+    .zoom-btn {
+      padding: 5px 12px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .zoom-btn:hover { color: var(--text-primary); }
+    .zoom-btn.active { background: var(--accent); color: white; }
+
+    /* Gantt Chart */
+    .gantt-wrapper {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .gantt-scroll {
+      overflow-x: auto;
+      overflow-y: auto;
+      max-height: calc(100vh - 260px);
+    }
+
+    .gantt-table {
+      min-width: 1000px;
+    }
+
+    /* Header */
+    .gantt-head {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg-secondary);
+    }
+
+    .gantt-head-label {
+      width: 260px;
+      min-width: 260px;
+      padding: 12px 16px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border-right: 1px solid var(--border-color);
+    }
+
+    .gantt-head-timeline {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    .day-col {
+      flex: 1;
+      text-align: center;
+      padding: 10px 2px;
+      font-size: 11px;
+      color: var(--text-muted);
+      border-left: 1px solid var(--border-color);
+      font-weight: 500;
+      min-width: 36px;
+    }
+
+    .day-col.today {
+      color: var(--today-color);
+      font-weight: 700;
+    }
+
+    .day-col.weekend {
+      background: rgba(148, 163, 184, 0.04);
+    }
+
+    .day-col .day-name {
+      font-size: 10px;
+      color: var(--text-muted);
+      opacity: 0.6;
+      margin-bottom: 2px;
+    }
+
+    /* Rows */
+    .gantt-row {
+      display: flex;
+      min-height: 44px;
+      border-bottom: 1px solid var(--border-color);
+      transition: background 0.15s ease;
+    }
+
+    .gantt-row:hover { background: var(--bg-hover); }
+
+    .gantt-row:last-child { border-bottom: none; }
+
+    .row-label {
+      width: 260px;
+      min-width: 260px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-right: 1px solid var(--border-color);
+      overflow: hidden;
+    }
+
+    .row-label .label-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .row-label .label-text {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .row-timeline {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Grid lines */
+    .grid-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: var(--border-color);
+      pointer-events: none;
+    }
+
+    /* Today line */
+    .today-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--today-color);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .today-line::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -4px;
+      width: 10px;
+      height: 10px;
+      background: var(--today-color);
+      border-radius: 50%;
+    }
+
+    /* Bars */
+    .gantt-bar {
+      position: absolute;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      font-size: 11px;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      z-index: 3;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      min-width: 6px;
+    }
+
+    .gantt-bar:hover {
+      transform: scaleY(1.15);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      z-index: 6;
+    }
+
+    .gantt-bar.due-only {
+      border-radius: 50%;
+      width: 12px !important;
+      height: 12px;
+      min-width: 12px;
+      padding: 0;
+    }
+
+    /* Tooltip */
+    .tooltip {
+      position: fixed;
+      z-index: 1000;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      min-width: 200px;
+      backdrop-filter: blur(12px);
+    }
+
+    .tooltip.visible { opacity: 1; }
+
+    .tooltip .tt-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.3;
+    }
+
+    .tooltip .tt-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 4px;
+    }
+
+    .tooltip .tt-row:last-child { margin-bottom: 0; }
+
+    .tooltip .tt-label {
+      color: var(--text-muted);
+      min-width: 56px;
+    }
+
+    .tooltip .tt-list-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* States */
+    .state-msg {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .state-msg .state-icon {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+
+    .state-msg .state-text { line-height: 1.6; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>📊 Gantt Chart View</h1>
-    <div class="controls">
-      <strong>Select Lists to Display:</strong>
-      <div class="list-selector" id="listSelector"><div class="loading">Loading lists...</div></div>
+    <div class="header">
+      <h1>
+        <span class="icon">📊</span>
+        Gantt Chart
+      </h1>
+      <div class="zoom-controls" id="zoomControls" style="display:none;">
+        <button class="zoom-btn active" data-zoom="day">Day</button>
+        <button class="zoom-btn" data-zoom="week">Week</button>
+      </div>
     </div>
-    <div id="ganttChart"><div class="loading">Select lists to view Gantt chart</div></div>
+
+    <div class="controls">
+      <div class="controls-header">
+        <strong>Lists</strong>
+        <div class="controls-actions">
+          <button class="btn" id="btnSelectAll">Select All</button>
+          <button class="btn" id="btnDeselectAll">Deselect All</button>
+        </div>
+      </div>
+      <div class="list-selector" id="listSelector">
+        <div class="state-msg"><span class="state-text">Loading lists…</span></div>
+      </div>
+    </div>
+
+    <div class="gantt-wrapper" id="ganttWrapper" style="display:none;">
+      <div class="gantt-scroll" id="ganttScroll">
+        <div class="gantt-table" id="ganttTable"></div>
+      </div>
+    </div>
+
+    <div id="emptyState">
+      <div class="state-msg">
+        <div class="state-icon">📋</div>
+        <div class="state-text">Select at least one list to view the Gantt chart</div>
+      </div>
+    </div>
   </div>
+
+  <!-- Tooltip element -->
+  <div class="tooltip" id="tooltip"></div>
+
   <script src="https://p.trellocdn.com/power-up.min.js"></script>
   <script>
+    /* ─── State ─── */
     var t = window.TrelloPowerUp.iframe();
     var allLists = [];
     var allCards = [];
     var selectedListIds = new Set();
-    var LIST_COLORS = ['#61bd4f', '#f2d600', '#ff9f1a', '#eb5a46', '#c377e0', '#0079bf', '#00c2e0', '#51e898', '#ff78cb', '#344563'];
+    var currentZoom = 'day'; // 'day' or 'week'
+    var cardCountByList = {};
 
+    var BAR_GRADIENTS = [
+      ['#22c55e', '#16a34a'],
+      ['#eab308', '#ca8a04'],
+      ['#f97316', '#ea580c'],
+      ['#ef4444', '#dc2626'],
+      ['#a855f7', '#9333ea'],
+      ['#3b82f6', '#2563eb'],
+      ['#06b6d4', '#0891b2'],
+      ['#10b981', '#059669'],
+      ['#ec4899', '#db2777'],
+      ['#6366f1', '#4f46e5']
+    ];
+
+    var DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    /* ─── Init ─── */
     function initialize() {
       t.board('id', 'lists').then(function(board) {
         allLists = board.lists;
-        var listSelector = document.getElementById('listSelector');
-        listSelector.innerHTML = '';
-        allLists.forEach(function(list) {
-          var label = document.createElement('label');
-          label.className = 'list-checkbox';
+        renderListSelector();
+        setupZoomControls();
+      }).catch(function(err) {
+        console.error('Error loading board:', err);
+        document.getElementById('listSelector').innerHTML =
+          '<div class="state-msg"><span class="state-text" style="color:#ef4444;">Error loading lists</span></div>';
+      });
+    }
+
+    /* ─── List Selector ─── */
+    function renderListSelector() {
+      var container = document.getElementById('listSelector');
+      container.innerHTML = '';
+
+      // First pass: count cards per list
+      t.cards('id', 'name', 'start', 'due', 'idList', 'url').then(function(cards) {
+        cardCountByList = {};
+        cards.forEach(function(c) {
+          if (c.due) {
+            cardCountByList[c.idList] = (cardCountByList[c.idList] || 0) + 1;
+          }
+        });
+
+        allLists.forEach(function(list, idx) {
+          var chip = document.createElement('label');
+          chip.className = 'list-chip';
+          chip.setAttribute('data-list-id', list.id);
+
           var checkbox = document.createElement('input');
           checkbox.type = 'checkbox';
-          checkbox.id = 'list-' + list.id;
           checkbox.value = list.id;
-          checkbox.addEventListener('change', handleListSelection);
-          var span = document.createElement('span');
-          span.textContent = list.name;
-          label.appendChild(checkbox);
-          label.appendChild(span);
-          listSelector.appendChild(label);
+          checkbox.addEventListener('change', function() {
+            handleListToggle(list.id, this.checked);
+            chip.classList.toggle('checked', this.checked);
+          });
+
+          var dot = document.createElement('span');
+          dot.className = 'dot';
+          var grad = BAR_GRADIENTS[idx % BAR_GRADIENTS.length];
+          dot.style.background = grad[0];
+
+          var name = document.createElement('span');
+          name.textContent = list.name;
+
+          var count = document.createElement('span');
+          count.className = 'count';
+          count.textContent = cardCountByList[list.id] || 0;
+
+          chip.appendChild(checkbox);
+          chip.appendChild(dot);
+          chip.appendChild(name);
+          chip.appendChild(count);
+          container.appendChild(chip);
         });
-      }).catch(function(error) {
-        console.error('Error:', error);
-        document.getElementById('listSelector').innerHTML = '<div style="color: red;">Error loading lists</div>';
+      });
+
+      // Select/Deselect all
+      document.getElementById('btnSelectAll').addEventListener('click', function() {
+        document.querySelectorAll('.list-chip input').forEach(function(cb) {
+          cb.checked = true;
+          cb.parentElement.classList.add('checked');
+          selectedListIds.add(cb.value);
+        });
+        loadAndRender();
+      });
+
+      document.getElementById('btnDeselectAll').addEventListener('click', function() {
+        document.querySelectorAll('.list-chip input').forEach(function(cb) {
+          cb.checked = false;
+          cb.parentElement.classList.remove('checked');
+        });
+        selectedListIds.clear();
+        showEmptyState();
       });
     }
 
-    function handleListSelection() {
-      selectedListIds.clear();
-      document.querySelectorAll('.list-selector input:checked').forEach(function(cb) {
-        selectedListIds.add(cb.value);
-      });
-      if (selectedListIds.size === 0) {
-        document.getElementById('ganttChart').innerHTML = '<div class="no-data">Select at least one list</div>';
-        return;
+    function handleListToggle(listId, checked) {
+      if (checked) {
+        selectedListIds.add(listId);
+      } else {
+        selectedListIds.delete(listId);
       }
-      loadCardsAndRenderGantt();
+      if (selectedListIds.size === 0) {
+        showEmptyState();
+      } else {
+        loadAndRender();
+      }
     }
 
-    function loadCardsAndRenderGantt() {
-      document.getElementById('ganttChart').innerHTML = '<div class="loading">Loading cards...</div>';
-      t.cards('id', 'name', 'due', 'idList', 'url').then(function(cards) {
+    function showEmptyState() {
+      document.getElementById('ganttWrapper').style.display = 'none';
+      document.getElementById('zoomControls').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'block';
+    }
+
+    /* ─── Zoom ─── */
+    function setupZoomControls() {
+      document.querySelectorAll('.zoom-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.zoom-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          currentZoom = this.getAttribute('data-zoom');
+          if (allCards.length > 0) renderGantt();
+        });
+      });
+    }
+
+    /* ─── Load Data ─── */
+    function loadAndRender() {
+      t.cards('id', 'name', 'start', 'due', 'idList', 'url').then(function(cards) {
         allCards = cards.filter(function(card) {
           return selectedListIds.has(card.idList) && card.due;
         });
+        if (allCards.length === 0) {
+          document.getElementById('ganttWrapper').style.display = 'block';
+          document.getElementById('emptyState').style.display = 'none';
+          document.getElementById('zoomControls').style.display = 'none';
+          document.getElementById('ganttTable').innerHTML =
+            '<div class="state-msg"><div class="state-icon">📭</div><div class="state-text">No cards with due dates found in the selected lists</div></div>';
+          return;
+        }
+        document.getElementById('ganttWrapper').style.display = 'block';
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('zoomControls').style.display = 'flex';
         renderGantt();
-      }).catch(function(error) {
-        console.error('Error:', error);
-        document.getElementById('ganttChart').innerHTML = '<div class="no-data">Error loading cards</div>';
+      }).catch(function(err) {
+        console.error('Error loading cards:', err);
       });
     }
 
+    /* ─── Render ─── */
     function renderGantt() {
-      if (allCards.length === 0) {
-        document.getElementById('ganttChart').innerHTML = '<div class="no-data">No cards with due dates found</div>';
-        return;
-      }
-      var dates = allCards.map(function(c) { return new Date(c.due); });
-      var minDate = new Date(Math.min.apply(null, dates));
-      var maxDate = new Date(Math.max.apply(null, dates));
-      minDate.setDate(minDate.getDate() - 2);
-      maxDate.setDate(maxDate.getDate() + 2);
-      var daysDiff = Math.ceil((maxDate - minDate) / (1000 * 60 * 60 * 24));
-      var dateRange = [];
-      for (var i = 0; i < daysDiff; i++) {
-        var date = new Date(minDate);
-        date.setDate(date.getDate() + i);
-        dateRange.push(date);
-      }
-      var html = '<div class="gantt-container"><div class="gantt-header"><div class="gantt-labels">Card Name</div><div class="gantt-timeline"><div class="timeline-header">';
-      dateRange.forEach(function(date) {
-        html += '<div class="timeline-day">' + date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + '</div>';
+      var today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      // Compute date range
+      var allDates = [];
+      allCards.forEach(function(c) {
+        if (c.start) allDates.push(new Date(c.start));
+        allDates.push(new Date(c.due));
       });
-      html += '</div></div></div>';
+      allDates.push(today);
+
+      var minDate = new Date(Math.min.apply(null, allDates));
+      var maxDate = new Date(Math.max.apply(null, allDates));
+      minDate.setHours(0, 0, 0, 0);
+      maxDate.setHours(0, 0, 0, 0);
+      minDate.setDate(minDate.getDate() - 3);
+      maxDate.setDate(maxDate.getDate() + 3);
+
+      var totalDays = Math.ceil((maxDate - minDate) / 86400000);
+      if (totalDays < 7) totalDays = 7;
+
+      // Build date columns
+      var dateRange = [];
+      for (var i = 0; i < totalDays; i++) {
+        var d = new Date(minDate);
+        d.setDate(d.getDate() + i);
+        dateRange.push(d);
+      }
+
+      // In week view, group by week
+      var columns = [];
+      if (currentZoom === 'week') {
+        var weekStart = null;
+        var weekEnd = null;
+        dateRange.forEach(function(d, idx) {
+          if (d.getDay() === 1 || idx === 0) {
+            if (weekStart !== null) {
+              columns.push({ start: weekStart, end: weekEnd, label: fmtShort(weekStart) + ' – ' + fmtShort(weekEnd) });
+            }
+            weekStart = new Date(d);
+          }
+          weekEnd = new Date(d);
+        });
+        if (weekStart !== null) {
+          columns.push({ start: weekStart, end: weekEnd, label: fmtShort(weekStart) + ' – ' + fmtShort(weekEnd) });
+        }
+      } else {
+        dateRange.forEach(function(d) {
+          columns.push({ start: d, end: d, label: fmtShort(d), dayName: DAY_NAMES[d.getDay()], isToday: sameDay(d, today), isWeekend: d.getDay() === 0 || d.getDay() === 6 });
+        });
+      }
+
+      // Sort cards by start/due
+      allCards.sort(function(a, b) {
+        var aStart = a.start ? new Date(a.start) : new Date(a.due);
+        var bStart = b.start ? new Date(b.start) : new Date(b.due);
+        return aStart - bStart;
+      });
+
+      // Build HTML
+      var html = '<div class="gantt-head">';
+      html += '<div class="gantt-head-label">Card</div>';
+      html += '<div class="gantt-head-timeline">';
+      columns.forEach(function(col) {
+        var cls = 'day-col';
+        if (col.isToday) cls += ' today';
+        if (col.isWeekend) cls += ' weekend';
+        html += '<div class="' + cls + '">';
+        if (col.dayName) html += '<div class="day-name">' + col.dayName + '</div>';
+        html += col.label;
+        html += '</div>';
+      });
+      html += '</div></div>';
+
+      // Rows
       allCards.forEach(function(card) {
         var list = allLists.find(function(l) { return l.id === card.idList; });
-        var listIndex = allLists.findIndex(function(l) { return l.id === card.idList; });
-        var color = LIST_COLORS[listIndex % LIST_COLORS.length];
-        var cardDate = new Date(card.due);
-        var daysFromStart = Math.floor((cardDate - minDate) / (1000 * 60 * 60 * 24));
-        var leftPercent = (daysFromStart / daysDiff) * 100;
-        html += '<div class="gantt-row"><div class="row-label" title="' + card.name + '">' + card.name + '</div><div class="row-timeline">';
-        html += '<div class="gantt-bar" style="left: ' + leftPercent + '%; width: 3%; background-color: ' + color + ';" onclick="window.open(\'' + card.url + '\', \'_blank\')" title="' + card.name + ' - ' + list.name + '">' + card.name + '</div>';
+        var listIdx = allLists.findIndex(function(l) { return l.id === card.idList; });
+        var grad = BAR_GRADIENTS[listIdx % BAR_GRADIENTS.length];
+
+        var startDate = card.start ? new Date(card.start) : new Date(card.due);
+        var dueDate = new Date(card.due);
+        startDate.setHours(0, 0, 0, 0);
+        dueDate.setHours(0, 0, 0, 0);
+
+        var hasBothDates = !!card.start;
+        var durationDays = Math.max(1, Math.ceil((dueDate - startDate) / 86400000) + 1);
+
+        var leftPercent = ((startDate - minDate) / 86400000) / totalDays * 100;
+        var widthPercent = (durationDays / totalDays) * 100;
+
+        // Clamp
+        if (leftPercent < 0) { widthPercent += leftPercent; leftPercent = 0; }
+        if (widthPercent < 0.5) widthPercent = 0.5;
+
+        var barClass = 'gantt-bar' + (hasBothDates ? '' : ' due-only');
+        var barStyle = 'left:' + leftPercent + '%;width:' + widthPercent + '%;background:linear-gradient(135deg,' + grad[0] + ',' + grad[1] + ');';
+
+        // Data attrs for tooltip
+        var dataAttrs = ' data-name="' + escHtml(card.name) + '"';
+        dataAttrs += ' data-list="' + escHtml(list ? list.name : '') + '"';
+        dataAttrs += ' data-start="' + (card.start ? fmtFull(startDate) : '—') + '"';
+        dataAttrs += ' data-due="' + fmtFull(dueDate) + '"';
+        dataAttrs += ' data-days="' + (hasBothDates ? durationDays + ' day' + (durationDays !== 1 ? 's' : '') : 'Due date only') + '"';
+        dataAttrs += ' data-color="' + grad[0] + '"';
+
+        html += '<div class="gantt-row">';
+        html += '<div class="row-label" title="' + escHtml(card.name) + '">';
+        html += '<span class="label-dot" style="background:' + grad[0] + '"></span>';
+        html += '<span class="label-text">' + escHtml(card.name) + '</span>';
+        html += '</div>';
+        html += '<div class="row-timeline">';
+
+        // Grid lines
+        columns.forEach(function(col, ci) {
+          var x = ((ci + 0.5) / columns.length) * 100;
+          if (col.isWeekend) {
+            // no extra grid for weekends, border already handles it
+          }
+        });
+
+        // Today line
+        var todayOffset = ((today - minDate) / 86400000) / totalDays * 100;
+        if (todayOffset >= 0 && todayOffset <= 100) {
+          html += '<div class="today-line" style="left:' + todayOffset + '%"></div>';
+        }
+
+        html += '<div class="' + barClass + '" style="' + barStyle + '"' + dataAttrs;
+        html += ' onclick="window.open(\'' + card.url + '\',\'_blank\')"';
+        html += ' onmouseenter="showTooltip(event, this)" onmousemove="moveTooltip(event)" onmouseleave="hideTooltip()">';
+        if (hasBothDates) html += escHtml(card.name);
+        html += '</div>';
+
         html += '</div></div>';
       });
-      html += '</div>';
-      document.getElementById('ganttChart').innerHTML = html;
+
+      document.getElementById('ganttTable').innerHTML = html;
     }
+
+    /* ─── Tooltip ─── */
+    var tooltipEl = document.getElementById('tooltip');
+
+    function showTooltip(e, el) {
+      var html = '<div class="tt-name">' + el.getAttribute('data-name') + '</div>';
+      html += '<div class="tt-row"><span class="tt-list-dot" style="background:' + el.getAttribute('data-color') + '"></span>' + el.getAttribute('data-list') + '</div>';
+      html += '<div class="tt-row"><span class="tt-label">Start</span>' + el.getAttribute('data-start') + '</div>';
+      html += '<div class="tt-row"><span class="tt-label">Due</span>' + el.getAttribute('data-due') + '</div>';
+      html += '<div class="tt-row"><span class="tt-label">Duration</span>' + el.getAttribute('data-days') + '</div>';
+      tooltipEl.innerHTML = html;
+      tooltipEl.classList.add('visible');
+      moveTooltip(e);
+    }
+
+    function moveTooltip(e) {
+      var x = e.clientX + 16;
+      var y = e.clientY + 16;
+      if (x + 240 > window.innerWidth) x = e.clientX - 240;
+      if (y + 160 > window.innerHeight) y = e.clientY - 160;
+      tooltipEl.style.left = x + 'px';
+      tooltipEl.style.top = y + 'px';
+    }
+
+    function hideTooltip() {
+      tooltipEl.classList.remove('visible');
+    }
+
+    /* ─── Helpers ─── */
+    function fmtShort(d) {
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function fmtFull(d) {
+      return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function sameDay(a, b) {
+      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
+
+    function escHtml(str) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(str));
+      return div.innerHTML;
+    }
+
+    /* ─── Start ─── */
     initialize();
   </script>
 </body>
