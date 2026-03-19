@@ -11,7 +11,7 @@ TrelloPowerUp.initialize({
       callback: function(t) {
         return t.modal({
           title: 'Gantt Chart',
-          url: 'https://toikairakau.github.io/trello-gantt-powerup/gantt.html',
+          url: 'https://lourenzoavelar.github.io/trello-gantt-powerup/gantt.html',
           height: 600,
           fullscreen: true
         });
