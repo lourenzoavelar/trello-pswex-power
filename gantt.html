@@ -272,6 +272,11 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       border-right: 1px solid var(--border-color);
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: var(--bg-primary);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
     }
 
     .gantt-head-timeline {
@@ -324,6 +329,23 @@
 
     .gantt-row:last-child { border-bottom: none; }
 
+    .gantt-group-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--bg-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-color);
+      position: sticky;
+      left: 0;
+      z-index: 4;
+    }
+
     .row-label {
       width: 280px;
       min-width: 280px;
@@ -333,6 +355,11 @@
       gap: 8px;
       border-right: 1px solid var(--border-color);
       overflow: hidden;
+      position: sticky;
+      left: 0;
+      z-index: 5;
+      background: var(--bg-primary);
+      box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
     }
 
     .row-label .label-dot {
@@ -349,6 +376,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .row-label.completed .label-text {
+      text-decoration: line-through;
+      opacity: 0.5;
     }
 
     .row-timeline {
@@ -409,6 +441,20 @@
       transition: transform 0.15s ease, box-shadow 0.15s ease;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       min-width: 6px;
+    }
+
+    .gantt-bar.completed {
+      opacity: 0.4;
+    }
+
+    .bar-progress {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: inherit;
+      pointer-events: none;
     }
 
     .gantt-bar:hover {
@@ -549,6 +595,7 @@
         <button class="zoom-btn active" data-zoom="day" id="i18nBtnDay">Day</button>
         <button class="zoom-btn" data-zoom="week" id="i18nBtnWeek">Week</button>
         <button class="zoom-btn" data-zoom="month" id="i18nBtnMonth">Month</button>
+        <button class="btn" id="btnToday" style="display:none;">Today</button>
       </div>
     </div>
 
@@ -592,6 +639,7 @@
         day: 'Day',
         week: 'Week',
         month: 'Month',
+        today: 'Today',
         lists: 'Lists',
         selectAll: 'Select All',
         deselectAll: 'Deselect All',
@@ -614,6 +662,7 @@
         day: 'Dia',
         week: 'Semana',
         month: 'M\u00eas',
+        today: 'Hoje',
         lists: 'Listas',
         selectAll: 'Selecionar Tudo',
         deselectAll: 'Desmarcar Tudo',
@@ -665,6 +714,7 @@
       document.getElementById('i18nBtnDay').textContent = i18n.day;
       document.getElementById('i18nBtnWeek').textContent = i18n.week;
       document.getElementById('i18nBtnMonth').textContent = i18n.month;
+      document.getElementById('btnToday').textContent = i18n.today;
       document.getElementById('i18nLists').textContent = i18n.lists;
       document.getElementById('btnSelectAll').textContent = i18n.selectAll;
       document.getElementById('btnDeselectAll').textContent = i18n.deselectAll;
@@ -692,7 +742,7 @@
       container.innerHTML = '';
 
       // First pass: count cards per list
-      t.cards('id', 'name', 'start', 'due', 'idList', 'url').then(function(cards) {
+      t.cards('id', 'name', 'start', 'due', 'dueComplete', 'idList', 'url').then(function(cards) {
         cardCountByList = {};
         cards.forEach(function(c) {
           if (c.due) {
@@ -777,6 +827,7 @@
     function showEmptyState() {
       document.getElementById('ganttWrapper').style.display = 'none';
       document.getElementById('zoomControls').style.display = 'none';
+      document.getElementById('btnToday').style.display = 'none';
       document.getElementById('emptyState').style.display = 'block';
     }
 
@@ -790,11 +841,15 @@
           if (allCards.length > 0) renderGantt();
         });
       });
+
+      document.getElementById('btnToday').addEventListener('click', function() {
+        scrollToToday();
+      });
     }
 
     /* ─── Load Data ─── */
     function loadAndRender() {
-      t.cards('id', 'name', 'start', 'due', 'idList', 'url').then(function(cards) {
+      t.cards('id', 'name', 'start', 'due', 'dueComplete', 'idList', 'url').then(function(cards) {
         allCards = cards.filter(function(card) {
           return selectedListIds.has(card.idList) && card.due;
         });
@@ -802,6 +857,7 @@
           document.getElementById('ganttWrapper').style.display = 'block';
           document.getElementById('emptyState').style.display = 'none';
           document.getElementById('zoomControls').style.display = 'none';
+          document.getElementById('btnToday').style.display = 'none';
           document.getElementById('ganttTable').innerHTML =
             '<div class="state-msg"><div class="state-icon">📭</div><div class="state-text">' + i18n.noCardsFound + '</div></div>';
           return;
@@ -809,6 +865,7 @@
         document.getElementById('ganttWrapper').style.display = 'block';
         document.getElementById('emptyState').style.display = 'none';
         document.getElementById('zoomControls').style.display = 'flex';
+        document.getElementById('btnToday').style.display = 'inline-flex';
         renderGantt();
       }).catch(function(err) {
         console.error('Error loading cards:', err);
@@ -836,11 +893,25 @@
       var ganttTable = document.getElementById('ganttTable');
       ganttTable.className = 'gantt-table zoom-' + currentZoom;
 
-      // Sort cards by start/due
-      allCards.sort(function(a, b) {
-        var aStart = a.start ? new Date(a.start) : new Date(a.due);
-        var bStart = b.start ? new Date(b.start) : new Date(b.due);
-        return aStart - bStart;
+      // Group cards by list order (allLists preserves Trello order)
+      var cardsByList = {};
+      allCards.forEach(function(card) {
+        if (!cardsByList[card.idList]) cardsByList[card.idList] = [];
+        cardsByList[card.idList].push(card);
+      });
+
+      var groups = [];
+      allLists.forEach(function(list) {
+        var listCards = (cardsByList[list.id] || []).slice();
+        if (!listCards.length) return;
+
+        listCards.sort(function(a, b) {
+          var aStart = a.start ? new Date(a.start) : new Date(a.due);
+          var bStart = b.start ? new Date(b.start) : new Date(b.due);
+          return aStart - bStart;
+        });
+
+        groups.push({ list: list, cards: listCards });
       });
 
       // Build HTML
@@ -858,71 +929,99 @@
       });
       html += '</div></div>';
 
-      // Rows
-      allCards.forEach(function(card) {
-        var list = allLists.find(function(l) { return l.id === card.idList; });
-        var listIdx = allLists.findIndex(function(l) { return l.id === card.idList; });
+      // Rows by list group
+      groups.forEach(function(group) {
+        var list = group.list;
+        var listIdx = allLists.findIndex(function(l) { return l.id === list.id; });
         var grad = BAR_GRADIENTS[listIdx % BAR_GRADIENTS.length];
 
-        var startDate = card.start ? new Date(card.start) : new Date(card.due);
-        var dueDate = new Date(card.due);
-        startDate.setHours(0, 0, 0, 0);
-        dueDate.setHours(0, 0, 0, 0);
-
-        var hasBothDates = !!card.start;
-        var durationDays = Math.max(1, Math.ceil((dueDate - startDate) / 86400000) + 1);
-
-        var leftPercent;
-        var widthPercent;
-
-        if (hasBothDates) {
-          leftPercent = getPositionPercent(startDate.getTime(), columns);
-          widthPercent = getPositionPercent(addDays(dueDate, 1).getTime(), columns) - leftPercent;
-        } else {
-          leftPercent = getPositionPercent(addHours(dueDate, 12).getTime(), columns);
-          widthPercent = 0;
-        }
-
-        // Clamp
-        if (leftPercent < 0) leftPercent = 0;
-        if (leftPercent > 100) leftPercent = 100;
-        if (widthPercent < 0.5) widthPercent = 0.5;
-        if (leftPercent + widthPercent > 100) widthPercent = Math.max(0.5, 100 - leftPercent);
-
-        var barClass = 'gantt-bar' + (hasBothDates ? '' : ' due-only');
-        var barStyle = 'left:' + leftPercent + '%;width:' + widthPercent + '%;background:linear-gradient(135deg,' + grad[0] + ',' + grad[1] + ');';
-
-        // Data attrs for tooltip
-        var dataAttrs = ' data-name="' + escHtml(card.name) + '"';
-        dataAttrs += ' data-list="' + escHtml(list ? list.name : '') + '"';
-        dataAttrs += ' data-start="' + (card.start ? fmtFull(startDate) : '—') + '"';
-        dataAttrs += ' data-due="' + fmtFull(dueDate) + '"';
-        dataAttrs += ' data-days="' + (hasBothDates ? i18n.dayUnit(durationDays) : i18n.dueOnly) + '"';
-        dataAttrs += ' data-color="' + grad[0] + '"';
-
-        html += '<div class="gantt-row">';
-        html += '<div class="row-label" title="' + escHtml(card.name) + '">';
+        html += '<div class="gantt-group-header">';
         html += '<span class="label-dot" style="background:' + grad[0] + '"></span>';
-        html += '<span class="label-text">' + escHtml(card.name) + '</span>';
-        html += '</div>';
-        html += '<div class="row-timeline">';
-
-        // Today line
-        var todayOffset = getPositionPercent(addHours(today, 12).getTime(), columns);
-        if (todayOffset >= 0 && todayOffset <= 100) {
-          html += '<div class="today-line" style="left:' + todayOffset + '%"></div>';
-        }
-
-        html += '<div class="' + barClass + '" style="' + barStyle + '"' + dataAttrs;
-        html += ' onclick="window.open(\'' + card.url + '\',\'_blank\')"';
-        html += ' onmouseenter="showTooltip(event, this)" onmousemove="moveTooltip(event)" onmouseleave="hideTooltip()">';
-        if (hasBothDates) html += escHtml(card.name);
+        html += '<span>' + escHtml(list.name) + '</span>';
         html += '</div>';
 
-        html += '</div></div>';
+        group.cards.forEach(function(card) {
+          var startDate = card.start ? new Date(card.start) : new Date(card.due);
+          var dueDate = new Date(card.due);
+          startDate.setHours(0, 0, 0, 0);
+          dueDate.setHours(0, 0, 0, 0);
+
+          var hasBothDates = !!card.start;
+          var isCompleted = card.dueComplete === true;
+          var durationDays = Math.max(1, Math.ceil((dueDate - startDate) / 86400000) + 1);
+
+          var leftPercent;
+          var widthPercent;
+
+          if (hasBothDates) {
+            leftPercent = getPositionPercent(startDate.getTime(), columns);
+            widthPercent = getPositionPercent(addDays(dueDate, 1).getTime(), columns) - leftPercent;
+          } else {
+            leftPercent = getPositionPercent(addHours(dueDate, 12).getTime(), columns);
+            widthPercent = 0;
+          }
+
+          // Clamp
+          if (leftPercent < 0) leftPercent = 0;
+          if (leftPercent > 100) leftPercent = 100;
+          if (widthPercent < 0.5) widthPercent = 0.5;
+          if (leftPercent + widthPercent > 100) widthPercent = Math.max(0.5, 100 - leftPercent);
+
+          var rowLabelClass = 'row-label' + (isCompleted ? ' completed' : '');
+          var barClass = 'gantt-bar' + (hasBothDates ? '' : ' due-only') + (isCompleted ? ' completed' : '');
+          var barStyle = 'left:' + leftPercent + '%;width:' + widthPercent + '%;background:linear-gradient(135deg,' + grad[0] + ',' + grad[1] + ');';
+
+          var barInner = '';
+          if (hasBothDates) {
+            var progressPct;
+            var spanMs = dueDate - startDate;
+            if (spanMs <= 0) {
+              progressPct = today >= dueDate ? 100 : 0;
+            } else {
+              progressPct = Math.min(100, Math.max(0, ((today - startDate) / spanMs) * 100));
+            }
+            barInner = '<div class="bar-progress" style="width:' + progressPct + '%"></div>' + escHtml(card.name);
+          }
+
+          // Data attrs for tooltip
+          var dataAttrs = ' data-name="' + escHtml(card.name) + '"';
+          dataAttrs += ' data-list="' + escHtml(list.name) + '"';
+          dataAttrs += ' data-start="' + (card.start ? fmtFull(startDate) : '—') + '"';
+          dataAttrs += ' data-due="' + fmtFull(dueDate) + '"';
+          dataAttrs += ' data-days="' + (hasBothDates ? i18n.dayUnit(durationDays) : i18n.dueOnly) + '"';
+          dataAttrs += ' data-color="' + grad[0] + '"';
+
+          html += '<div class="gantt-row">';
+          html += '<div class="' + rowLabelClass + '" title="' + escHtml(card.name) + '">';
+          html += '<span class="label-dot" style="background:' + grad[0] + '"></span>';
+          html += '<span class="label-text">' + escHtml(card.name) + '</span>';
+          html += '</div>';
+          html += '<div class="row-timeline">';
+
+          // Today line
+          var todayOffset = getPositionPercent(addHours(today, 12).getTime(), columns);
+          if (todayOffset >= 0 && todayOffset <= 100) {
+            html += '<div class="today-line" style="left:' + todayOffset + '%"></div>';
+          }
+
+          html += '<div class="' + barClass + '" style="' + barStyle + '"' + dataAttrs;
+          html += ' onclick="window.open(\'' + card.url + '\',\'_blank\')"';
+          html += ' onmouseenter="showTooltip(event, this)" onmousemove="moveTooltip(event)" onmouseleave="hideTooltip()">';
+          html += barInner;
+          html += '</div>';
+
+          html += '</div></div>';
+        });
       });
 
       ganttTable.innerHTML = html;
+      document.getElementById('btnToday').style.display = document.querySelector('#ganttTable .day-col.today') ? 'inline-flex' : 'none';
+    }
+
+    function scrollToToday() {
+      var todayColumn = document.querySelector('#ganttTable .day-col.today');
+      if (!todayColumn) return;
+      todayColumn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     }
 
     /* ─── Tooltip ─── */
