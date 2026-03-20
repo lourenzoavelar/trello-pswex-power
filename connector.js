@@ -7,12 +7,12 @@ TrelloPowerUp.initialize({
         dark: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png',
         light: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png'
       },
-      text: 'Gantt View',
+      text: 'Gráfico Gantt',
       callback: function(t) {
         return t.modal({
-          title: 'Gantt Chart',
+          title: 'Gráfico Gantt',
           url: 'https://lourenzoavelar.github.io/trello-gantt-powerup/gantt.html',
-          height: 600,
+          height: 720,
           fullscreen: true
         });
       }

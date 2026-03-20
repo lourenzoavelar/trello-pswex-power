@@ -29,11 +29,12 @@
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
       color: var(--text-primary);
       min-height: 100vh;
-      padding: 24px;
+      padding: 12px;
     }
 
     .container {
-      max-width: 1600px;
+      width: 100%;
+      max-width: none;
       margin: 0 auto;
       background: var(--glass-bg);
       backdrop-filter: blur(var(--glass-blur));
@@ -41,14 +42,22 @@
       border: 1px solid var(--border-color);
       border-radius: 16px;
       padding: 28px;
+      min-height: calc(100vh - 24px);
       box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     }
 
     .header {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
+      gap: 16px;
       margin-bottom: 24px;
+    }
+
+    .header-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
     .header h1 {
@@ -69,6 +78,12 @@
       align-items: center;
       justify-content: center;
       font-size: 16px;
+    }
+
+    .header-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-left: 42px;
     }
 
     /* Controls Panel */
@@ -217,11 +232,24 @@
     .gantt-scroll {
       overflow-x: auto;
       overflow-y: auto;
-      max-height: calc(100vh - 260px);
+      max-height: calc(100vh - 240px);
+      min-height: 420px;
     }
 
     .gantt-table {
       min-width: 1000px;
+    }
+
+    .gantt-table.zoom-day .day-col {
+      min-width: 52px;
+    }
+
+    .gantt-table.zoom-week .day-col {
+      min-width: 124px;
+    }
+
+    .gantt-table.zoom-month .day-col {
+      min-width: 148px;
     }
 
     /* Header */
@@ -235,8 +263,8 @@
     }
 
     .gantt-head-label {
-      width: 260px;
-      min-width: 260px;
+      width: 280px;
+      min-width: 280px;
       padding: 12px 16px;
       font-size: 11px;
       font-weight: 600;
@@ -279,6 +307,11 @@
       margin-bottom: 2px;
     }
 
+    .day-col .day-label {
+      display: block;
+      white-space: nowrap;
+    }
+
     /* Rows */
     .gantt-row {
       display: flex;
@@ -292,8 +325,8 @@
     .gantt-row:last-child { border-bottom: none; }
 
     .row-label {
-      width: 260px;
-      min-width: 260px;
+      width: 280px;
+      min-width: 280px;
       padding: 10px 16px;
       display: flex;
       align-items: center;
@@ -385,11 +418,16 @@
     }
 
     .gantt-bar.due-only {
-      border-radius: 50%;
+      border-radius: 999px;
       width: 12px !important;
       height: 12px;
       min-width: 12px;
       padding: 0;
+      transform: translateX(-50%);
+    }
+
+    .gantt-bar.due-only:hover {
+      transform: translateX(-50%) scale(1.15);
     }
 
     /* Tooltip */
@@ -455,18 +493,62 @@
     }
 
     .state-msg .state-text { line-height: 1.6; }
+
+    @media (max-width: 900px) {
+      body {
+        padding: 0;
+      }
+
+      .container {
+        border-radius: 0;
+        min-height: 100vh;
+        padding: 18px;
+      }
+
+      .header {
+        flex-direction: column;
+      }
+
+      .header-subtitle {
+        margin-left: 0;
+      }
+
+      .controls-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .controls-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .row-label,
+      .gantt-head-label {
+        width: 220px;
+        min-width: 220px;
+      }
+
+      .gantt-scroll {
+        max-height: calc(100vh - 220px);
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>
-        <span class="icon">📊</span>
-        <span id="i18nTitle">Gantt Chart</span>
-      </h1>
+      <div class="header-copy">
+        <h1>
+          <span class="icon">📊</span>
+          <span id="i18nTitle">Gantt Chart</span>
+        </h1>
+        <p class="header-subtitle" id="i18nSubtitle">Track project progress across the timeline</p>
+      </div>
       <div class="zoom-controls" id="zoomControls" style="display:none;">
         <button class="zoom-btn active" data-zoom="day" id="i18nBtnDay">Day</button>
         <button class="zoom-btn" data-zoom="week" id="i18nBtnWeek">Week</button>
+        <button class="zoom-btn" data-zoom="month" id="i18nBtnMonth">Month</button>
       </div>
     </div>
 
@@ -506,8 +588,10 @@
     var TRANSLATIONS = {
       en: {
         ganttChart: 'Gantt Chart',
+        ganttSubtitle: 'Track project progress across the timeline',
         day: 'Day',
         week: 'Week',
+        month: 'Month',
         lists: 'Lists',
         selectAll: 'Select All',
         deselectAll: 'Deselect All',
@@ -525,15 +609,17 @@
         dateLocale: 'en-US'
       },
       'pt-BR': {
-        ganttChart: 'Gr\u00e1fico de Gantt',
+        ganttChart: 'Gr\u00e1fico Gantt',
+        ganttSubtitle: 'Acompanhe o andamento do projeto na linha do tempo',
         day: 'Dia',
         week: 'Semana',
+        month: 'M\u00eas',
         lists: 'Listas',
         selectAll: 'Selecionar Tudo',
         deselectAll: 'Desmarcar Tudo',
         card: 'Cart\u00e3o',
         loadingLists: 'Carregando listas\u2026',
-        selectAtLeastOne: 'Selecione pelo menos uma lista para ver o gr\u00e1fico de Gantt',
+        selectAtLeastOne: 'Selecione pelo menos uma lista para ver o gr\u00e1fico Gantt',
         noCardsFound: 'Nenhum cart\u00e3o com data de entrega encontrado nas listas selecionadas',
         errorLoadingLists: 'Erro ao carregar listas',
         tooltipStart: 'In\u00edcio',
@@ -556,7 +642,7 @@
     var allLists = [];
     var allCards = [];
     var selectedListIds = new Set();
-    var currentZoom = 'day'; // 'day' or 'week'
+    var currentZoom = 'day'; // 'day', 'week' or 'month'
     var cardCountByList = {};
 
     var BAR_GRADIENTS = [
@@ -575,8 +661,10 @@
     /* ─── Init ─── */
     function applyStaticTranslations() {
       document.getElementById('i18nTitle').textContent = i18n.ganttChart;
+      document.getElementById('i18nSubtitle').textContent = i18n.ganttSubtitle;
       document.getElementById('i18nBtnDay').textContent = i18n.day;
       document.getElementById('i18nBtnWeek').textContent = i18n.week;
+      document.getElementById('i18nBtnMonth').textContent = i18n.month;
       document.getElementById('i18nLists').textContent = i18n.lists;
       document.getElementById('btnSelectAll').textContent = i18n.selectAll;
       document.getElementById('btnDeselectAll').textContent = i18n.deselectAll;
@@ -586,6 +674,7 @@
 
     function initialize() {
       applyStaticTranslations();
+      setupSelectionControls();
       t.lists('id', 'name').then(function(lists) {
         allLists = lists;
         renderListSelector();
@@ -642,25 +731,33 @@
           chip.appendChild(count);
           container.appendChild(chip);
         });
-      });
 
-      // Select/Deselect all
+        setAllListsSelected(true);
+        loadAndRender();
+      });
+    }
+
+    function setupSelectionControls() {
       document.getElementById('btnSelectAll').addEventListener('click', function() {
-        document.querySelectorAll('.list-chip input').forEach(function(cb) {
-          cb.checked = true;
-          cb.parentElement.classList.add('checked');
-          selectedListIds.add(cb.value);
-        });
+        setAllListsSelected(true);
         loadAndRender();
       });
 
       document.getElementById('btnDeselectAll').addEventListener('click', function() {
-        document.querySelectorAll('.list-chip input').forEach(function(cb) {
-          cb.checked = false;
-          cb.parentElement.classList.remove('checked');
-        });
-        selectedListIds.clear();
+        setAllListsSelected(false);
         showEmptyState();
+      });
+    }
+
+    function setAllListsSelected(checked) {
+      document.querySelectorAll('.list-chip input').forEach(function(cb) {
+        cb.checked = checked;
+        cb.parentElement.classList.toggle('checked', checked);
+        if (checked) {
+          selectedListIds.add(cb.value);
+        } else {
+          selectedListIds.delete(cb.value);
+        }
       });
     }
 
@@ -735,42 +832,9 @@
       var maxDate = new Date(Math.max.apply(null, allDates));
       minDate.setHours(0, 0, 0, 0);
       maxDate.setHours(0, 0, 0, 0);
-      minDate.setDate(minDate.getDate() - 3);
-      maxDate.setDate(maxDate.getDate() + 3);
-
-      var totalDays = Math.ceil((maxDate - minDate) / 86400000);
-      if (totalDays < 7) totalDays = 7;
-
-      // Build date columns
-      var dateRange = [];
-      for (var i = 0; i < totalDays; i++) {
-        var d = new Date(minDate);
-        d.setDate(d.getDate() + i);
-        dateRange.push(d);
-      }
-
-      // In week view, group by week
-      var columns = [];
-      if (currentZoom === 'week') {
-        var weekStart = null;
-        var weekEnd = null;
-        dateRange.forEach(function(d, idx) {
-          if (d.getDay() === 1 || idx === 0) {
-            if (weekStart !== null) {
-              columns.push({ start: weekStart, end: weekEnd, label: fmtShort(weekStart) + ' – ' + fmtShort(weekEnd) });
-            }
-            weekStart = new Date(d);
-          }
-          weekEnd = new Date(d);
-        });
-        if (weekStart !== null) {
-          columns.push({ start: weekStart, end: weekEnd, label: fmtShort(weekStart) + ' – ' + fmtShort(weekEnd) });
-        }
-      } else {
-        dateRange.forEach(function(d) {
-          columns.push({ start: d, end: d, label: fmtShort(d), dayName: i18n.dayNames[d.getDay()], isToday: sameDay(d, today), isWeekend: d.getDay() === 0 || d.getDay() === 6 });
-        });
-      }
+      var columns = buildColumns(minDate, maxDate, today);
+      var ganttTable = document.getElementById('ganttTable');
+      ganttTable.className = 'gantt-table zoom-' + currentZoom;
 
       // Sort cards by start/due
       allCards.sort(function(a, b) {
@@ -789,7 +853,7 @@
         if (col.isWeekend) cls += ' weekend';
         html += '<div class="' + cls + '">';
         if (col.dayName) html += '<div class="day-name">' + col.dayName + '</div>';
-        html += col.label;
+        html += '<span class="day-label">' + col.label + '</span>';
         html += '</div>';
       });
       html += '</div></div>';
@@ -808,12 +872,22 @@
         var hasBothDates = !!card.start;
         var durationDays = Math.max(1, Math.ceil((dueDate - startDate) / 86400000) + 1);
 
-        var leftPercent = ((startDate - minDate) / 86400000) / totalDays * 100;
-        var widthPercent = (durationDays / totalDays) * 100;
+        var leftPercent;
+        var widthPercent;
+
+        if (hasBothDates) {
+          leftPercent = getPositionPercent(startDate.getTime(), columns);
+          widthPercent = getPositionPercent(addDays(dueDate, 1).getTime(), columns) - leftPercent;
+        } else {
+          leftPercent = getPositionPercent(addHours(dueDate, 12).getTime(), columns);
+          widthPercent = 0;
+        }
 
         // Clamp
-        if (leftPercent < 0) { widthPercent += leftPercent; leftPercent = 0; }
+        if (leftPercent < 0) leftPercent = 0;
+        if (leftPercent > 100) leftPercent = 100;
         if (widthPercent < 0.5) widthPercent = 0.5;
+        if (leftPercent + widthPercent > 100) widthPercent = Math.max(0.5, 100 - leftPercent);
 
         var barClass = 'gantt-bar' + (hasBothDates ? '' : ' due-only');
         var barStyle = 'left:' + leftPercent + '%;width:' + widthPercent + '%;background:linear-gradient(135deg,' + grad[0] + ',' + grad[1] + ');';
@@ -833,16 +907,8 @@
         html += '</div>';
         html += '<div class="row-timeline">';
 
-        // Grid lines
-        columns.forEach(function(col, ci) {
-          var x = ((ci + 0.5) / columns.length) * 100;
-          if (col.isWeekend) {
-            // no extra grid for weekends, border already handles it
-          }
-        });
-
         // Today line
-        var todayOffset = ((today - minDate) / 86400000) / totalDays * 100;
+        var todayOffset = getPositionPercent(addHours(today, 12).getTime(), columns);
         if (todayOffset >= 0 && todayOffset <= 100) {
           html += '<div class="today-line" style="left:' + todayOffset + '%"></div>';
         }
@@ -856,7 +922,7 @@
         html += '</div></div>';
       });
 
-      document.getElementById('ganttTable').innerHTML = html;
+      ganttTable.innerHTML = html;
     }
 
     /* ─── Tooltip ─── */
@@ -891,8 +957,137 @@
       return d.toLocaleDateString(i18n.dateLocale, { month: 'short', day: 'numeric' });
     }
 
+    function fmtMonth(d) {
+      return d.toLocaleDateString(i18n.dateLocale, { month: 'short', year: 'numeric' });
+    }
+
     function fmtFull(d) {
       return d.toLocaleDateString(i18n.dateLocale, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+    }
+
+    function buildColumns(minDate, maxDate, today) {
+      if (currentZoom === 'month') {
+        return buildMonthColumns(minDate, maxDate, today);
+      }
+      if (currentZoom === 'week') {
+        return buildWeekColumns(minDate, maxDate, today);
+      }
+      return buildDayColumns(minDate, maxDate, today);
+    }
+
+    function buildDayColumns(minDate, maxDate, today) {
+      var start = addDays(minDate, -3);
+      var end = addDays(maxDate, 4);
+      var columns = [];
+      var cursor = new Date(start);
+
+      while (cursor < end) {
+        var next = addDays(cursor, 1);
+        columns.push({
+          start: new Date(cursor),
+          endExclusive: next,
+          label: fmtShort(cursor),
+          dayName: i18n.dayNames[cursor.getDay()],
+          isToday: sameDay(cursor, today),
+          isWeekend: cursor.getDay() === 0 || cursor.getDay() === 6
+        });
+        cursor = next;
+      }
+
+      return columns;
+    }
+
+    function buildWeekColumns(minDate, maxDate, today) {
+      var start = startOfWeek(addDays(minDate, -7));
+      var end = startOfWeek(addDays(maxDate, 14));
+      var columns = [];
+      var cursor = new Date(start);
+
+      while (cursor < end) {
+        var next = addDays(cursor, 7);
+        columns.push({
+          start: new Date(cursor),
+          endExclusive: next,
+          label: fmtShort(cursor) + ' - ' + fmtShort(addDays(next, -1)),
+          dayName: fmtMonth(cursor),
+          isToday: today >= cursor && today < next
+        });
+        cursor = next;
+      }
+
+      return columns;
+    }
+
+    function buildMonthColumns(minDate, maxDate, today) {
+      var start = startOfMonth(addMonths(minDate, -1));
+      var end = startOfMonth(addMonths(maxDate, 2));
+      var columns = [];
+      var cursor = new Date(start);
+
+      while (cursor < end) {
+        var next = addMonths(cursor, 1);
+        columns.push({
+          start: new Date(cursor),
+          endExclusive: next,
+          label: cursor.toLocaleDateString(i18n.dateLocale, { month: 'long' }),
+          dayName: String(cursor.getFullYear()),
+          isToday: today >= cursor && today < next
+        });
+        cursor = next;
+      }
+
+      return columns;
+    }
+
+    function getPositionPercent(timeMs, columns) {
+      if (!columns.length) return 0;
+
+      var firstStart = columns[0].start.getTime();
+      var lastEnd = columns[columns.length - 1].endExclusive.getTime();
+
+      if (timeMs <= firstStart) return 0;
+      if (timeMs >= lastEnd) return 100;
+
+      for (var i = 0; i < columns.length; i++) {
+        var start = columns[i].start.getTime();
+        var end = columns[i].endExclusive.getTime();
+
+        if (timeMs >= start && timeMs < end) {
+          var fraction = (timeMs - start) / (end - start);
+          return ((i + fraction) / columns.length) * 100;
+        }
+      }
+
+      return 100;
+    }
+
+    function addHours(date, hours) {
+      var copy = new Date(date);
+      copy.setHours(copy.getHours() + hours);
+      return copy;
+    }
+
+    function addDays(date, days) {
+      var copy = new Date(date);
+      copy.setDate(copy.getDate() + days);
+      return copy;
+    }
+
+    function addMonths(date, months) {
+      return new Date(date.getFullYear(), date.getMonth() + months, 1);
+    }
+
+    function startOfWeek(date) {
+      var copy = new Date(date);
+      copy.setHours(0, 0, 0, 0);
+      var day = copy.getDay();
+      var diff = day === 0 ? -6 : 1 - day;
+      copy.setDate(copy.getDate() + diff);
+      return copy;
+    }
+
+    function startOfMonth(date) {
+      return new Date(date.getFullYear(), date.getMonth(), 1);
     }
 
     function sameDay(a, b) {

@@ -1,6 +1,6 @@
 {
-  "name": "Gantt Chart View",
-  "details": "Display selected lists in a Gantt chart timeline view",
+  "name": "Gráfico Gantt",
+  "details": "Exibe listas selecionadas em uma visualização de linha do tempo no formato Gantt",
   "icon": {
     "url": "https://cdn-icons-png.flaticon.com/512/2920/2920277.png"
   },
