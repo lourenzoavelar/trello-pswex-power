@@ -6,6 +6,9 @@
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <!-- FontAwesome for precise social icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
   <script id="tailwind-config">
     tailwind.config = {
       darkMode: "class",
@@ -37,159 +40,204 @@
     .material-symbols-outlined {
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
     }
-    .primary-gradient {
-        background: linear-gradient(135deg, #3626cc 0%, #4f46e4 100%);
-    }
     .feedback {
       display: none;
-      font-size: 14px;
+      font-size: 13px;
       color: #006644;
       font-weight: 600;
       text-align: center;
       margin-top: 8px;
     }
-    /* Hide scrollbar for a cleaner look if wanted */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #dce2f3; border-radius: 4px; }
   </style>
 </head>
-<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary">
-  <div id="content" class="px-4 py-6">
-    <div class="bg-surface-container-lowest rounded-[24px] shadow-[0_4px_24px_rgba(0,0,0,0.02)] overflow-hidden border border-outline-variant/20">
-      
-      <!-- Form Content -->
-      <form id="trello-form" class="p-6 space-y-8" onsubmit="event.preventDefault();">
+<body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary m-0 overflow-x-hidden">
+  <div id="content" class="bg-surface-container-lowest w-full min-h-screen">
+    
+    <!-- Header Tabs -->
+    <div class="flex border-b border-outline-variant/30 px-3 bg-surface-container-lowest sticky top-0 z-10">
+      <button id="tab-post" class="tab-btn active flex-1 font-semibold text-[13px] py-2.5 border-b-2 border-primary text-primary transition-colors cursor-pointer">
+        Campos do Post
+      </button>
+      <button id="tab-ad" class="tab-btn flex-1 font-medium text-[13px] py-2.5 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+        Campos Anúncio
+      </button>
+      <button id="tab-ia" class="tab-btn flex-1 font-medium text-[13px] py-2.5 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer">
+        Com IA
+      </button>
+    </div>
 
-        <!-- Rede Social -->
-        <section class="space-y-4">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-primary" data-icon="share">share</span>
-            <h3 class="text-base font-bold font-headline text-on-surface">Redes Sociais</h3>
-          </div>
-          <div class="grid grid-cols-3 md:grid-cols-4 gap-3" id="social-network-container">
-            <!-- Instagram -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="Instagram"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">camera</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">Instagram</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- Facebook -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="Facebook"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">public</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">Facebook</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- YouTube -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="YouTube"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">smart_display</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">YouTube</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- TikTok -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="TikTok"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">music_note</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">TikTok</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- LinkedIn -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="LinkedIn"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">business_center</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">LinkedIn</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- Google -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="Google"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">language</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">Google</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-            <!-- Outros -->
-            <label class="group relative flex flex-col items-center justify-center p-3 rounded-xl border border-outline-variant/30 bg-surface-container-low hover:bg-surface-container-high transition-all cursor-pointer">
-              <input class="peer hidden social-checkbox" type="checkbox" value="Outro"/>
-              <span class="material-symbols-outlined mb-1 text-on-surface-variant group-hover:scale-110 transition-transform">more_horiz</span>
-              <span class="text-[11px] font-semibold font-label text-on-surface-variant">Outros</span>
-              <div class="absolute inset-0 rounded-xl ring-2 ring-primary ring-offset-1 opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"></div>
-            </label>
-          </div>
-        </section>
+    <!-- Form Content -->
+    <form id="trello-form" class="p-4 space-y-4" onsubmit="event.preventDefault();">
 
-        <!-- Legenda -->
-        <section class="space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-primary">description</span>
-              <h3 class="text-base font-bold font-headline text-on-surface">Legenda do post</h3>
-            </div>
-            <button id="btn-copy-caption" class="flex items-center gap-1.5 text-primary font-bold text-[11px] bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-lg transition-all active:scale-95" type="button">
-              <span class="material-symbols-outlined text-sm">content_copy</span>
-              Copiar
+      <!-- ABA 1: CAMPOS DO POST -->
+      <div id="content-post" class="tab-content block space-y-5">
+        
+        <!-- Redes Sociais -->
+        <div class="space-y-2">
+          <label class="text-[12px] font-bold text-on-surface">Publicar nos Seguintes Canais</label>
+          <div class="flex flex-wrap gap-2">
+            <label class="cursor-pointer relative group" title="Instagram">
+              <input type="checkbox" class="peer hidden social-checkbox" value="Instagram">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#E1306C] peer-checked:text-white peer-checked:border-[#E1306C] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-instagram text-[16px]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="Facebook">
+              <input type="checkbox" class="peer hidden social-checkbox" value="Facebook">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#1877F2] peer-checked:text-white peer-checked:border-[#1877F2] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-facebook-f text-[16px]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="YouTube">
+              <input type="checkbox" class="peer hidden social-checkbox" value="YouTube">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#FF0000] peer-checked:text-white peer-checked:border-[#FF0000] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-youtube text-[16px]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="TikTok">
+              <input type="checkbox" class="peer hidden social-checkbox" value="TikTok">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#000000] peer-checked:text-white peer-checked:border-[#000000] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-tiktok text-[16px] peer-checked:text-[#00f2fe]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="LinkedIn">
+              <input type="checkbox" class="peer hidden social-checkbox" value="LinkedIn">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#0A66C2] peer-checked:text-white peer-checked:border-[#0A66C2] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-linkedin-in text-[16px]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="Google">
+              <input type="checkbox" class="peer hidden social-checkbox" value="Google">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-[#DB4437] peer-checked:text-white peer-checked:border-[#DB4437] transition-colors hover:bg-surface-container-high">
+                <i class="fa-brands fa-google text-[16px]"></i>
+              </div>
+            </label>
+            <label class="cursor-pointer relative group" title="Outros">
+              <input type="checkbox" class="peer hidden social-checkbox" value="Outro">
+              <div class="w-[34px] h-[34px] flex items-center justify-center rounded border border-outline-variant/40 text-on-surface-variant bg-surface-container-low peer-checked:bg-primary peer-checked:text-white peer-checked:border-primary transition-colors hover:bg-surface-container-high">
+                <i class="fa-solid fa-ellipsis text-[16px]"></i>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Legenda do post -->
+        <div class="space-y-1 relative">
+          <div class="flex justify-between items-center pr-1">
+            <label class="text-[12px] font-bold text-on-surface">Legenda do post</label>
+            <!-- Copiar Icon -->
+            <button type="button" id="btn-copy-caption" class="text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" title="Copiar legenda">
+              <span class="material-symbols-outlined text-[16px]">content_copy</span>
+              <span id="tooltip-copy" class="absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
             </button>
           </div>
-          <textarea id="post-caption" class="w-full min-h-[100px] p-4 text-sm rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface placeholder:text-on-surface-variant/40 resize-y font-body leading-relaxed"></textarea>
-          <div id="feedback-copy" class="text-[11px] text-[#006644] font-bold text-right hidden">Legenda copiada!</div>
-        </section>
+          <textarea id="post-caption" class="w-full min-h-[90px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
+        </div>
 
-        <!-- Outros detalhes -->
-        <section class="space-y-6 block">
-          
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold font-label text-on-surface-variant tracking-wider uppercase ml-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">palette</span> Orientações da arte</label>
-            <textarea id="art-guidelines" class="w-full min-h-[80px] p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface resize-y text-sm"></textarea>
+        <!-- Outros detalhes originais condensados -->
+        <div class="space-y-3">
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Orientações da arte</label>
+            <textarea id="art-guidelines" class="w-full min-h-[50px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
           </div>
-          
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold font-label text-on-surface-variant tracking-wider uppercase ml-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">title</span>Texto na arte</label>
-            <textarea id="art-text" class="w-full min-h-[80px] p-3 rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface resize-y text-sm"></textarea>
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Texto na arte</label>
+            <textarea id="art-text" class="w-full min-h-[50px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
           </div>
-
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold font-label text-on-surface-variant tracking-wider uppercase ml-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">link</span>Link do criativo finalizado</label>
-            <input type="url" id="final-creative-link" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface text-sm"/>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Criativo Finalizado</label>
+              <input type="url" id="final-creative-link" placeholder="Link da imagem/vídeo" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent"/>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Mídia Pronta</label>
+              <input type="url" id="ready-media-link" placeholder="Link (Download)" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent"/>
+            </div>
           </div>
-
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold font-label text-on-surface-variant tracking-wider uppercase ml-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">cloud_download</span>⬇️ Link mídia pronta</label>
-            <input type="url" id="ready-media-link" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface text-sm"/>
-          </div>
-
-          <div class="space-y-2">
-            <label class="text-[11px] font-bold font-label text-on-surface-variant tracking-wider uppercase ml-1 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">aspect_ratio</span>Formato do criativo</label>
-            <select id="creative-format" class="w-full px-4 py-3 rounded-xl bg-surface-container-low border border-outline-variant/30 focus:border-transparent focus:ring-2 focus:ring-primary/40 text-on-surface text-sm cursor-pointer">
+          <div class="space-y-1">
+            <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Formato</label>
+            <select id="creative-format" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent cursor-pointer">
               <option value="">Selecione...</option>
-              <option value="🖼️📱Feed + Story Imagem">🖼️📱Feed + Story Imagem</option>
-              <option value="🖼️ Feed imagem única">🖼️ Feed imagem única</option>
-              <option value="🖼️🖼️🖼️Feed carrossel Imagem">🖼️🖼️🖼️Feed carrossel Imagem</option>
-              <option value="📱Story Imagem única">📱Story Imagem única</option>
-              <option value="▶️Feed Vídeo 1x1">▶️Feed Vídeo 1x1</option>
-              <option value="▶️🎴Reels Vídeo">▶️🎴Reels Vídeo</option>
-              <option value="▶️🎴Feed+Reels Vídeo">▶️🎴Feed+Reels Vídeo</option>
-              <option value="🖼️🎴Feed imagem + Reels Vídeo">🖼️🎴Feed imagem + Reels Vídeo</option>
-              <option value="🖼️▶️🎴Feed imagem e video + Reels Vídeo">🖼️▶️🎴Feed imagem e video + Reels Vídeo</option>
-              <option value="▶️💻Video Youtube 16x9">▶️💻Video Youtube 16x9</option>
+              <option value="Feed + Story Imagem">Feed + Story Imagem</option>
+              <option value="Feed imagem única">Feed imagem única</option>
+              <option value="Feed carrossel Imagem">Feed carrossel Imagem</option>
+              <option value="Story Imagem única">Story Imagem única</option>
+              <option value="Feed Vídeo 1x1">Feed Vídeo 1x1</option>
+              <option value="Reels Vídeo">Reels Vídeo</option>
+              <option value="Feed+Reels Vídeo">Feed+Reels Vídeo</option>
+              <option value="Feed imagem + Reels Vídeo">Feed imagem + Reels Vídeo</option>
+              <option value="Feed (img+vid) + Reels">Feed (img+vid) + Reels</option>
+              <option value="Video Youtube 16x9">Video Youtube 16x9</option>
             </select>
           </div>
-
-        </section>
-
-        <!-- Action Button -->
-        <div class="pt-4 pb-2">
-          <button id="btn-save" class="w-full primary-gradient text-on-primary font-bold py-4 rounded-xl shadow-md hover:shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2" type="button">
-            <span class="material-symbols-outlined text-lg">save</span>
-            Salvar Dados
-          </button>
-          <div id="feedback-save" class="feedback w-full">Dados salvos com sucesso!</div>
         </div>
-      </form>
-    </div>
+      </div>
+
+      <!-- ABA 2: CAMPOS DO ANUNCIO -->
+      <div id="content-ad" class="tab-content hidden space-y-4">
+        <div class="space-y-1">
+          <label class="text-[12px] font-bold text-on-surface flex items-center gap-1">📝 Texto Principal</label>
+          <textarea id="ad-main-text" placeholder="Insira a legenda do post ou roteiro para gravação..." class="w-full min-h-[90px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[12px] font-bold text-on-surface flex items-center gap-1">📃 Variações do texto principal</label>
+          <textarea id="ad-variations" class="w-full min-h-[70px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
+        </div>
+
+        <div class="space-y-2 mt-2">
+          <div>
+            <label class="text-[12px] font-bold text-on-surface flex items-center gap-1">📣 Títulos curtos</label>
+            <p class="text-[11px] text-on-surface-variant font-medium mt-0.5">Insira pelo menos 4 variações</p>
+          </div>
+          <div class="space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 01</span>
+              <input type="text" id="ad-title-1" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent text-on-surface"/>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 02</span>
+              <input type="text" id="ad-title-2" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent text-on-surface"/>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 03</span>
+              <input type="text" id="ad-title-3" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent text-on-surface"/>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 04</span>
+              <input type="text" id="ad-title-4" class="w-full p-2 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary bg-transparent text-on-surface"/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: COM IA -->
+      <div id="content-ia" class="tab-content hidden space-y-4">
+        <div class="space-y-1">
+          <label class="text-[12px] font-bold text-on-surface">Agente de IA Oficial</label>
+          <input type="url" id="ai-agent-link" placeholder="Cole o link (Ex: https://chatgpt.com/...)" class="w-full p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent"/>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[12px] font-bold text-on-surface">Sugestão de Prompt para imagem</label>
+          <textarea id="ai-prompt-suggest" class="w-full min-h-[140px] p-2.5 text-[13px] rounded-md border border-outline-variant/40 focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-transparent resize-y"></textarea>
+        </div>
+      </div>
+
+      <!-- Action Button (Global) -->
+      <div class="pt-2 sticky bottom-0 bg-surface-container-lowest pb-2">
+        <button id="btn-save" class="w-full bg-primary text-white text-[13px] font-bold py-3 rounded-md shadow-sm hover:opacity-90 hover:-translate-y-[1px] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5" type="button">
+          Salvar
+        </button>
+        <div id="feedback-save" class="feedback w-full">✅ Dados salvos com sucesso!</div>
+      </div>
+    </form>
   </div>
 
   <script src="./card-custom-fields.js"></script>
 </body>
 </html>
+

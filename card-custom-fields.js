@@ -23,9 +23,19 @@ t.render(function() {
       document.getElementById('final-creative-link').value = data.finalCreativeLink || '';
       document.getElementById('ready-media-link').value = data.readyMediaLink || '';
       document.getElementById('creative-format').value = data.creativeFormat || '';
+
+      // Novos campos aba Anuncio e IA
+      document.getElementById('ad-main-text').value = data.adMainText || '';
+      document.getElementById('ad-variations').value = data.adVariations || '';
+      document.getElementById('ad-title-1').value = data.adTitle1 || '';
+      document.getElementById('ad-title-2').value = data.adTitle2 || '';
+      document.getElementById('ad-title-3').value = data.adTitle3 || '';
+      document.getElementById('ad-title-4').value = data.adTitle4 || '';
+      document.getElementById('ai-agent-link').value = data.aiAgentLink || '';
+      document.getElementById('ai-prompt-suggest').value = data.aiPromptSuggest || '';
     }
   }).then(function() {
-    // Redimensionar para mostrar todo novo conteúdo sem scroll exagerado
+    // Resize after populating all data
     t.sizeTo('#content');
   });
 });
@@ -46,12 +56,24 @@ document.getElementById('btn-save').addEventListener('click', function() {
     artText: document.getElementById('art-text').value,
     finalCreativeLink: document.getElementById('final-creative-link').value,
     readyMediaLink: document.getElementById('ready-media-link').value,
-    creativeFormat: document.getElementById('creative-format').value
+    creativeFormat: document.getElementById('creative-format').value,
+    
+    // Novos campos
+    adMainText: document.getElementById('ad-main-text').value,
+    adVariations: document.getElementById('ad-variations').value,
+    adTitle1: document.getElementById('ad-title-1').value,
+    adTitle2: document.getElementById('ad-title-2').value,
+    adTitle3: document.getElementById('ad-title-3').value,
+    adTitle4: document.getElementById('ad-title-4').value,
+    aiAgentLink: document.getElementById('ai-agent-link').value,
+    aiPromptSuggest: document.getElementById('ai-prompt-suggest').value
   };
 
   t.set('card', 'shared', 'customFieldsData', dataToSave).then(function() {
     var feedback = document.getElementById('feedback-save');
     feedback.style.display = 'block';
+    // Opcional para manter tamanho atualizado caso mude o height do feedback
+    t.sizeTo('#content');
     setTimeout(function() {
       feedback.style.display = 'none';
       t.sizeTo('#content');
@@ -59,49 +81,76 @@ document.getElementById('btn-save').addEventListener('click', function() {
   });
 });
 
+// Ação de copiar e focar na textarea pai (post-caption)
 document.getElementById('btn-copy-caption').addEventListener('click', function() {
-  var captionText = document.getElementById('post-caption').value;
+  var textArea = document.getElementById('post-caption');
+  var captionText = textArea.value;
   
   if (navigator.clipboard) {
     navigator.clipboard.writeText(captionText).then(function() {
-      showCopyFeedback();
+      showCopyFeedback(textArea);
     }).catch(function(err) {
-      fallbackCopyTextToClipboard(captionText);
+      fallbackCopyTextToClipboard(captionText, textArea);
     });
   } else {
-    fallbackCopyTextToClipboard(captionText);
+    fallbackCopyTextToClipboard(captionText, textArea);
   }
 });
 
-function fallbackCopyTextToClipboard(text) {
-  var textArea = document.createElement("textarea");
-  textArea.value = text;
-  
-  // Evitar scroll
-  textArea.style.top = "0";
-  textArea.style.left = "0";
-  textArea.style.position = "fixed";
+function fallbackCopyTextToClipboard(text, originalTextArea) {
+  var tempArea = document.createElement("textarea");
+  tempArea.value = text;
+  tempArea.style.top = "0";
+  tempArea.style.left = "0";
+  tempArea.style.position = "fixed";
 
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
+  document.body.appendChild(tempArea);
+  tempArea.focus();
+  tempArea.select();
 
   try {
     var successful = document.execCommand('copy');
     if (successful) {
-      showCopyFeedback();
+      showCopyFeedback(originalTextArea);
     }
   } catch (err) {
     console.error('Fallback: Falha ao copiar texto', err);
   }
 
-  document.body.removeChild(textArea);
+  document.body.removeChild(tempArea);
 }
 
-function showCopyFeedback() {
-  var feedback = document.getElementById('feedback-copy');
-  feedback.style.display = 'block';
+function showCopyFeedback(textArea) {
+  var tooltip = document.getElementById('tooltip-copy');
+  tooltip.style.opacity = '1';
+  textArea.focus();
+  
   setTimeout(function() {
-    feedback.style.display = 'none';
+    tooltip.style.opacity = '0';
   }, 2000);
 }
+
+// Lógica das Abas (Tabs) 
+const tabs = ['post', 'ad', 'ia'];
+tabs.forEach(function(tab) {
+  document.getElementById('tab-' + tab).addEventListener('click', function() {
+    // Esconde todos
+    tabs.forEach(function(tId) {
+      document.getElementById('content-' + tId).classList.add('hidden');
+      document.getElementById('content-' + tId).classList.remove('block');
+      document.getElementById('tab-' + tId).classList.remove('active', 'border-primary', 'text-primary');
+      document.getElementById('tab-' + tId).classList.add('border-transparent', 'text-on-surface-variant');
+    });
+    // Mostra o clicado ativo
+    document.getElementById('content-' + tab).classList.remove('hidden');
+    document.getElementById('content-' + tab).classList.add('block');
+    document.getElementById('tab-' + tab).classList.add('active', 'border-primary', 'text-primary');
+    document.getElementById('tab-' + tab).classList.remove('border-transparent', 'text-on-surface-variant');
+    
+    // Atualiza resize do iframe com timer leve por causa do 'hidden' display transition
+    setTimeout(function() {
+      t.sizeTo('#content');
+    }, 50);
+  });
+});
+
