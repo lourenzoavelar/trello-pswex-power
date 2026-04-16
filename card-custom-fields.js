@@ -240,9 +240,8 @@ aiButtons.forEach(function(btn) {
   btn.addEventListener('click', function() {
     var targetId = this.getAttribute('data-target');
     var targetField = document.getElementById(targetId);
-    var fieldValue = targetField ? encodeURIComponent(targetField.value) : '';
+    var fieldValue = targetField ? targetField.value : '';
     
-    // Ler os dados salvos globalmente para pegar aiAgentLink via cache (ou podemos ler do form diretamente)
     var aiLinkInput = document.getElementById('ai-agent-link').value;
     if (!aiLinkInput) {
       alert("Por favor, cole o link do seu Agente de IA na aba 'IA' antes de usar os botões.");
@@ -254,11 +253,44 @@ aiButtons.forEach(function(btn) {
     var listId = context.list || '';
     var cardId = context.card || '';
     
-    // Constrói a URL corretamente caso o link base já tenha parâmetros
-    var separator = aiLinkInput.includes('?') ? '&' : '?';
-    var finalUrl = aiLinkInput + separator + "field_id=" + targetId + "&board_id=" + boardId + "&list_id=" + listId + "&card_id=" + cardId + "&field_value=" + fieldValue;
+    // Constrói o texto do prompt
+    var customPrompt = document.getElementById('ai-prompt-suggest').value;
+    var promptParts = [];
     
-    // Abre a URL em uma nova aba
-    window.open(finalUrl, '_blank');
+    if (customPrompt && customPrompt.trim() !== '') {
+      promptParts.push(customPrompt.trim());
+    }
+    
+    promptParts.push("Informações de Rastreio (IDs): " + boardId + " / " + listId + " / " + cardId);
+    promptParts.push("Campo Alvo: " + targetId);
+    
+    if (fieldValue && fieldValue.trim() !== '') {
+      promptParts.push("Conteúdo atual do campo:\n" + fieldValue);
+    }
+    
+    var finalPrompt = promptParts.join('\n\n');
+    var encodedPrompt = encodeURIComponent(finalPrompt);
+    
+    var separator = aiLinkInput.includes('?') ? '&' : '?';
+    var finalUrl = aiLinkInput + separator + "q=" + encodedPrompt;
+    
+    // Mostra feedback visual no botão de que foi copiado
+    var originalHTML = this.innerHTML;
+    this.innerHTML = '<span class="text-[10px] font-bold text-green-600 mx-1">Copiado!</span>';
+    var btnRef = this;
+    setTimeout(function() {
+      btnRef.innerHTML = originalHTML;
+    }, 2000);
+
+    // Copia o prompt para a área de transferência antes de abrir a aba
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(finalPrompt).then(function() {
+        window.open(finalUrl, '_blank');
+      }).catch(function() {
+        window.open(finalUrl, '_blank'); // fallback caso block
+      });
+    } else {
+      window.open(finalUrl, '_blank');
+    }
   });
 });
