@@ -11,14 +11,28 @@ t.render(function() {
     // popular select clientProject
     var clientSelect = document.getElementById('clientProject');
     clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
+    
+    var clientExistsInList = false;
     clientsList.forEach(function(c) {
       var opt = document.createElement('option');
       opt.value = c;
       opt.textContent = c;
       clientSelect.appendChild(opt);
+      if (data && data.clientProject === c) {
+        clientExistsInList = true;
+      }
     });
 
     if (data) {
+      // Se o cliente existe na data salva mas foi removido da config, injetamo-lo temporariamente para nao sumir do card
+      if (data.clientProject && !clientExistsInList) {
+        var opt = document.createElement('option');
+        opt.value = data.clientProject;
+        // Marca que (Arquivado) para o usuário saber porque não está mais na config global
+        opt.textContent = data.clientProject + " (Membro/Removido)"; 
+        clientSelect.appendChild(opt);
+      }
+      
       clientSelect.value = data.clientProject || '';
       document.getElementById('post-caption').value = data.postCaption || '';
       
@@ -73,6 +87,9 @@ formInputs.forEach(function(input) {
     if (input.id === 'final-creative-link') {
       updateLinkStyle();
     }
+    
+    // Auto-save no change/blur
+    saveCustomFields();
   });
 });
 
@@ -86,6 +103,10 @@ function updateLinkStyle() {
 }
 
 document.getElementById('btn-save').addEventListener('click', function() {
+  saveCustomFields();
+});
+
+function saveCustomFields() {
   var selectedNetworks = [];
   var checkboxes = document.querySelectorAll('.social-checkbox');
   checkboxes.forEach(function(cb) {
@@ -128,7 +149,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
       t.sizeTo('#content');
     }, 3000);
   });
-});
+}
 
 // Ação de copiar e focar na textarea dinâmica
 var copyButtons = document.querySelectorAll('.btn-copy');

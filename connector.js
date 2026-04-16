@@ -35,6 +35,9 @@ TrelloPowerUp.initialize({
     }
     return buttons;
   },
+  'card-buttons': function(t, options) {
+    return [];
+  },
   'show-settings': function(t, options) {
     return t.modal({
       title: 'Configurações de Clientes/Projetos',
