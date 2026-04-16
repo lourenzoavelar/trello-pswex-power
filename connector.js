@@ -20,7 +20,7 @@ TrelloPowerUp.initialize({
   },
   'card-back-section': function(t, options) {
     return {
-      title: 'Campos do Post',
+      title: '',
       icon: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png',
       content: {
         type: 'iframe',
