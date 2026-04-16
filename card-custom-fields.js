@@ -81,23 +81,29 @@ document.getElementById('btn-save').addEventListener('click', function() {
   });
 });
 
-// Ação de copiar e focar na textarea pai (post-caption)
-document.getElementById('btn-copy-caption').addEventListener('click', function() {
-  var textArea = document.getElementById('post-caption');
-  var captionText = textArea.value;
-  
-  if (navigator.clipboard) {
-    navigator.clipboard.writeText(captionText).then(function() {
-      showCopyFeedback(textArea);
-    }).catch(function(err) {
-      fallbackCopyTextToClipboard(captionText, textArea);
-    });
-  } else {
-    fallbackCopyTextToClipboard(captionText, textArea);
-  }
+// Ação de copiar e focar na textarea dinâmica
+var copyButtons = document.querySelectorAll('.btn-copy');
+copyButtons.forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var targetId = btn.getAttribute('data-target');
+    var textArea = document.getElementById(targetId);
+    if (!textArea) return;
+    
+    var textToCopy = textArea.value;
+    
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(textToCopy).then(function() {
+        showCopyFeedback(btn, textArea);
+      }).catch(function(err) {
+        fallbackCopyTextToClipboard(textToCopy, btn, textArea);
+      });
+    } else {
+      fallbackCopyTextToClipboard(textToCopy, btn, textArea);
+    }
+  });
 });
 
-function fallbackCopyTextToClipboard(text, originalTextArea) {
+function fallbackCopyTextToClipboard(text, btn, originalTextArea) {
   var tempArea = document.createElement("textarea");
   tempArea.value = text;
   tempArea.style.top = "0";
@@ -111,7 +117,7 @@ function fallbackCopyTextToClipboard(text, originalTextArea) {
   try {
     var successful = document.execCommand('copy');
     if (successful) {
-      showCopyFeedback(originalTextArea);
+      showCopyFeedback(btn, originalTextArea);
     }
   } catch (err) {
     console.error('Fallback: Falha ao copiar texto', err);
@@ -120,13 +126,17 @@ function fallbackCopyTextToClipboard(text, originalTextArea) {
   document.body.removeChild(tempArea);
 }
 
-function showCopyFeedback(textArea) {
-  var tooltip = document.getElementById('tooltip-copy');
-  tooltip.style.opacity = '1';
+function showCopyFeedback(btn, textArea) {
+  var tooltip = btn.querySelector('.tooltip-copy');
+  if (tooltip) {
+    tooltip.style.opacity = '1';
+  }
   textArea.focus();
   
   setTimeout(function() {
-    tooltip.style.opacity = '0';
+    if (tooltip) {
+      tooltip.style.opacity = '0';
+    }
   }, 2000);
 }
 
@@ -153,4 +163,3 @@ tabs.forEach(function(tab) {
     }, 50);
   });
 });
-
