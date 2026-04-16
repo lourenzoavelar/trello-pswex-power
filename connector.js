@@ -38,6 +38,9 @@ TrelloPowerUp.initialize({
   'card-buttons': function(t, options) {
     return [];
   },
+  'card-detail-badges': function(t, options) {
+    return [];
+  },
   'show-settings': function(t, options) {
     return t.modal({
       title: 'Configurações de Clientes/Projetos',
@@ -68,13 +71,13 @@ TrelloPowerUp.initialize({
   },
   'card-back-section': function(t, options) {
     return {
-      title: '',
-      icon: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png',
+      title: 'Informações',
+      icon: 'https://lourenzoavelar.github.io/trello-gantt-powerup/icon.png',
       content: {
         type: 'iframe',
         url: t.signUrl('./card-custom-fields.html'),
-        height: 500
+        height: 480
       }
     };
-  }
+  },
 });
