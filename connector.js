@@ -16,6 +16,17 @@ TrelloPowerUp.initialize({
           fullscreen: true
         });
       }
+    },
+    {
+        icon: 'https://app.amazingpowerups.com/assets/section_icon_list-alt.svg',
+        text: 'Migrar Amazing Fields',
+        callback: function (t) {
+            return t.modal({
+                title: 'Ferramenta de Migração',
+                url: './migrate.html',
+                height: 500
+            });
+        }
     }];
   },
   'card-back-section': function(t, options) {

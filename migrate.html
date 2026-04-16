@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Migração Amazing Fields</title>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.6.8/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+</head>
+<body class="bg-gray-50 text-gray-800 p-6">
+    <div id="app" class="max-w-md mx-auto bg-white p-6 rounded shadow-sm border border-gray-200">
+        <h2 class="text-xl font-bold mb-4 text-blue-600">Migração: Amazing Fields</h2>
+        <p class="text-sm text-gray-600 mb-6">Para migrar os dados, precisamos que você insira suas chaves do Trello para lermos o quadro (não vamos salvar isso em lugar nenhum).</p>
+        
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">API Key</label>
+            <input type="text" id="apiKey" class="w-full border rounded px-3 py-2 text-sm" placeholder="Cole sua API Key">
+        </div>
+        
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Token</label>
+            <input type="password" id="apiToken" class="w-full border rounded px-3 py-2 text-sm" placeholder="Cole seu Token">
+        </div>
+
+        <button id="btnMigrate" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm transition-colors">
+            Iniciar Migração Completa
+        </button>
+
+        <div id="status" class="mt-4 p-3 bg-gray-100 rounded text-xs text-gray-600 hidden h-32 overflow-y-auto">
+            Log da migração:<br>
+        </div>
+    </div>
+
+    <script>
+        const t = window.TrelloPowerUp.iframe();
+
+        const AMAZING_FIELDS_PLUGIN_ID = '60e068efb294647187bbe4f5';
+        
+        const MAP_AMAZING_IDS_TO_OUR_FIELDS = {
+            '4051eac1-c947-415d-9410-b4c94b26301d': 'postCaption',       
+            'f19d2492-9e56-40a5-9043-f0262d3dbd89': 'artGuidelines',     
+            '4e2e1c6d-1a23-44b0-b54f-6bb9b1c857de': 'artText',           
+            'e82b9769-7cf8-46f9-ac6e-92e20692c118': 'finalCreativeLink', 
+            'ba41357c-6e28-4981-8a80-0ee9d493646b': 'creativeFormat',    
+            '4bed0b79-9d30-4110-9214-482fb2bdfeee': 'readyMediaLink'     
+        };
+
+        function logStatus(msg) {
+            const el = document.getElementById('status');
+            el.classList.remove('hidden');
+            el.innerHTML += `<div>${msg}</div>`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        document.getElementById('btnMigrate').addEventListener('click', async () => {
+            const apiKey = document.getElementById('apiKey').value.trim();
+            const apiToken = document.getElementById('apiToken').value.trim();
+
+            if (!apiKey || !apiToken) {
+                alert('Preencha a API Key e o Token.');
+                return;
+            }
+
+            document.getElementById('btnMigrate').disabled = true;
+            document.getElementById('btnMigrate').className = "w-full bg-gray-400 text-white font-bold py-2 px-4 rounded text-sm";
+            logStatus("⏳ Conectando ao quadro...");
+
+            try {
+                const context = t.getContext();
+                const boardId = context.board;
+                
+                const { data: cards } = await axios.get(`https://api.trello.com/1/boards/${boardId}/cards`, {
+                    params: { key: apiKey, token: apiToken, pluginData: true }
+                });
+
+                logStatus(`📦 Encontrados ${cards.length} cards. Iniciando varredura...`);
+
+                let migratedCount = 0;
+
+                for (const card of cards) {
+                    const pluginDataList = card.pluginData || [];
+                    const amazingDataRaw = pluginDataList.find(p => p.idPlugin === AMAZING_FIELDS_PLUGIN_ID);
+                    
+                    if (amazingDataRaw && amazingDataRaw.value) {
+                        try {
+                            const parsedData = JSON.parse(amazingDataRaw.value);
+                            if (parsedData.FD) {
+                                const decompressString = LZString.decompressFromUTF16(parsedData.FD);
+                                if (!decompressString) continue;
+
+                                const fieldsObj = JSON.parse(decompressString);
+                                let customFieldsData = {};
+                                
+                                for (const [amazingId, value] of Object.entries(fieldsObj)) {
+                                    if (amazingId.startsWith('__')) continue;
+                                    if (value === null || value === undefined || value === "") continue;
+
+                                    const nossoCampo = MAP_AMAZING_IDS_TO_OUR_FIELDS[amazingId];
+                                    if (nossoCampo) {
+                                         customFieldsData[nossoCampo] = value;
+                                    }
+                                }
+
+                                if (Object.keys(customFieldsData).length > 0) {
+                                    // MÁGICA: Usamos o t.set nativo do Power-Up para salvar!
+                                    // Isso resolve o erro 400 "private pluginData is limited to approved applications"
+                                    await t.set(card.id, 'shared', 'customFieldsData', customFieldsData);
+                                    migratedCount++;
+                                    logStatus(`✅ Card Migrado: ${card.name}`);
+                                }
+                            }
+                        } catch (e) {
+                            logStatus(`❌ Erro em: ${card.name}`);
+                        }
+                    }
+                }
+
+                logStatus(`<br><b>🎉 Migração concluída com sucesso! Total: ${migratedCount} cards atualizados.</b>`);
+                alert('Tudo pronto! Você já pode fechar esta janela e voltar a usar o quadro.');
+
+            } catch (err) {
+                logStatus(`<span style="color:red">🚨 Erro de conexão com a API. Verifique suas chaves.</span>`);
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>

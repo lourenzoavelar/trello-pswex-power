@@ -1,0 +1,26 @@
+{
+  "name": "trello-gantt-powerup",
+  "version": "1.0.0",
+  "description": "A private Trello Power-Up that displays selected lists in a Gantt chart timeline view.",
+  "main": "card-custom-fields.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lourenzoavelar/trello-gantt-powerup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/lourenzoavelar/trello-gantt-powerup/issues"
+  },
+  "homepage": "https://github.com/lourenzoavelar/trello-gantt-powerup#readme",
+  "dependencies": {
+    "axios": "^1.15.0",
+    "dotenv": "^17.4.2",
+    "lz-string": "^1.5.0"
+  }
+}
