@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+      padding: 8px;
+    }
+    .form-group {
+      margin-bottom: 12px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #5e6c84;
+    }
+    input[type="text"], input[type="url"], textarea, select {
+      width: 100%;
+      padding: 8px;
+      border: 2px solid #dfe1e6;
+      border-radius: 3px;
+      box-sizing: border-box;
+      background-color: #fafbfc;
+      font-size: 14px;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+    input:focus, textarea:focus, select:focus {
+      background-color: #fff;
+      border-color: #4c9aff;
+      outline: none;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+    button.btn-action {
+      background-color: #091e420a;
+      color: #172b4d;
+      border: none;
+      border-radius: 3px;
+      padding: 6px 12px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background-color 0.2s;
+      margin-top: 4px;
+    }
+    button.btn-action:hover {
+      background-color: #091e4214;
+    }
+    button.btn-primary {
+      background-color: #0052cc;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 12px;
+    }
+    button.btn-primary:hover {
+      background-color: #0047b3;
+    }
+    .feedback {
+      display: none;
+      margin-left: 8px;
+      font-size: 12px;
+      color: #006644;
+      font-weight: 600;
+    }
+    #content {
+      padding-bottom: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div id="content">
+    <div class="form-group">
+      <label for="post-caption">Legenda do post</label>
+      <textarea id="post-caption"></textarea>
+      <button class="btn-action" id="btn-copy-caption">Copiar legenda</button>
+      <span class="feedback" id="feedback-copy">Legenda copiada!</span>
+    </div>
+    
+    <div class="form-group">
+      <label for="social-network">Rede social</label>
+      <select id="social-network">
+        <option value="">Selecione...</option>
+        <option value="Instagram">Instagram</option>
+        <option value="Facebook">Facebook</option>
+        <option value="YouTube">YouTube</option>
+        <option value="TikTok">TikTok</option>
+        <option value="LinkedIn">LinkedIn</option>
+        <option value="Google">Google</option>
+        <option value="Outro">Outro</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="art-guidelines">Orientações da arte</label>
+      <textarea id="art-guidelines"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="art-text">Texto na arte</label>
+      <textarea id="art-text"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="final-creative-link">Link do criativo finalizado</label>
+      <input type="url" id="final-creative-link">
+    </div>
+
+    <div class="form-group">
+      <label for="ready-media-link">⬇️ Link mídia pronta (png, mp4,etc)</label>
+      <input type="url" id="ready-media-link">
+    </div>
+
+    <div class="form-group">
+      <label for="creative-format">Formato do criativo</label>
+      <select id="creative-format">
+        <option value="">Selecione...</option>
+        <option value="🖼️📱Feed + Story Imagem">🖼️📱Feed + Story Imagem</option>
+        <option value="🖼️ Feed imagem única">🖼️ Feed imagem única</option>
+        <option value="🖼️🖼️🖼️Feed carrossel Imagem">🖼️🖼️🖼️Feed carrossel Imagem</option>
+        <option value="📱Story Imagem única">📱Story Imagem única</option>
+        <option value="▶️Feed Vídeo 1x1">▶️Feed Vídeo 1x1</option>
+        <option value="▶️🎴Reels Vídeo">▶️🎴Reels Vídeo</option>
+        <option value="▶️🎴Feed+Reels Vídeo">▶️🎴Feed+Reels Vídeo</option>
+        <option value="🖼️🎴Feed imagem + Reels Vídeo">🖼️🎴Feed imagem + Reels Vídeo</option>
+        <option value="🖼️▶️🎴Feed imagem e video + Reels Vídeo">🖼️▶️🎴Feed imagem e video + Reels Vídeo</option>
+        <option value="▶️💻Video Youtube 16x9">▶️💻Video Youtube 16x9</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" id="btn-save">Salvar Dados</button>
+    <span class="feedback" id="feedback-save">Dados salvos com sucesso!</span>
+  </div>
+
+  <script src="./card-custom-fields.js"></script>
+</body>
+</html>

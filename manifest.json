@@ -6,7 +6,8 @@
   },
   "author": "Your Company",
   "capabilities": [
-    "board-buttons"
+    "board-buttons",
+    "card-back-section"
   ],
   "connectorUrl": "https://lourenzoavelar.github.io/trello-gantt-powerup/connector.js",
   "tags": [
