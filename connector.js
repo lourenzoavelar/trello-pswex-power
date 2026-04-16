@@ -1,5 +1,7 @@
 /* global TrelloPowerUp */
 
+const ENABLE_MIGRATION_TOOL = false;
+
 TrelloPowerUp.initialize({
   'board-buttons': function(t, options) {
     return [{
@@ -16,8 +18,11 @@ TrelloPowerUp.initialize({
           fullscreen: true
         });
       }
-    },
-    {
+    };
+    
+    var buttons = [ganttButton];
+    if (ENABLE_MIGRATION_TOOL) {
+      buttons.push({
         icon: 'https://app.amazingpowerups.com/assets/section_icon_list-alt.svg',
         text: 'Migrar Amazing Fields',
         callback: function (t) {
@@ -27,7 +32,37 @@ TrelloPowerUp.initialize({
                 height: 500
             });
         }
-    }];
+      });
+    }
+    return buttons;
+  },
+  'show-settings': function(t, options) {
+    return t.popup({
+      title: 'Configurações de Clientes/Projetos',
+      url: './settings.html',
+      height: 350
+    });
+  },
+  'card-badges': function(t, options) {
+    return t.get('card', 'shared', 'customFieldsData')
+      .then(function(data) {
+        var badges = [];
+        if (data) {
+          if (data.clientProject) {
+            badges.push({
+              text: data.clientProject,
+              color: 'blue'
+            });
+          }
+          if (data.creativeFormat) {
+            badges.push({
+              text: data.creativeFormat,
+              color: 'green'
+            });
+          }
+        }
+        return badges;
+      });
   },
   'card-back-section': function(t, options) {
     return {

@@ -64,12 +64,22 @@
         <i class="fa-solid fa-bullhorn text-[14px]"></i> Anúncio e Copy
       </button>
       <button id="tab-ia" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-robot text-[14px]"></i> IA
+        <i class="fa-solid fa-wand-magic-sparkles text-[14px]"></i> IA
       </button>
     </div>
 
     <!-- Form Content -->
     <form id="trello-form" class="p-4 space-y-4" onsubmit="event.preventDefault();">
+
+      <!-- Cliente / Projeto (Global) -->
+      <div class="space-y-1 mb-2">
+        <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+          <i class="fa-solid fa-briefcase text-on-surface-variant/70"></i> Cliente/Projeto
+        </label>
+        <select id="clientProject" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low cursor-pointer shadow-sm">
+          <option value="">Selecione um cliente...</option>
+        </select>
+      </div>
 
       <!-- ABA 1: CAMPOS DO POST -->
       <div id="content-post" class="tab-content block space-y-5">
@@ -192,6 +202,21 @@
               <option value="Video Youtube 16x9">📺Vídeo Youtube 16x9</option>
             </select>
           </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-regular fa-calendar-check text-on-surface-variant/70"></i> Postar em
+              </label>
+              <input type="date" id="postDate" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-clock text-on-surface-variant/70"></i> Agendado para
+              </label>
+              <input type="date" id="scheduledDate" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -275,8 +300,8 @@
       </div>
 
       <!-- Action Button (Global) -->
-      <div class="pt-2 sticky bottom-0 bg-surface-container-lowest pb-2 z-10">
-        <button id="btn-save" class="w-full bg-primary text-white text-[13px] font-bold py-3 rounded-md shadow-sm hover:opacity-90 hover:-translate-y-[1px] active:scale-[0.99] transition-all flex items-center justify-center gap-1.5" type="button">
+      <div class="pt-2 sticky bottom-0 bg-surface-container-lowest pb-2 z-10 transition-all">
+        <button id="btn-save" disabled class="w-full bg-primary disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-[13px] font-bold py-3 rounded-md shadow-sm hover:opacity-90 hover:-translate-y-[1px] active:scale-[0.99] disabled:hover:opacity-100 disabled:hover:translate-y-0 disabled:active:scale-100 transition-all flex items-center justify-center gap-1.5" type="button">
           <i class="fa-solid fa-floppy-disk"></i> Salvar
         </button>
         <div id="feedback-save" class="feedback w-full">✅ Dados salvos com sucesso!</div>

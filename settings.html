@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html class="light" lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <script src="https://p.trellocdn.com/power-up.min.js"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#3626cc",
+          },
+          fontFamily: {
+            body: ["Inter"],
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 font-body text-gray-800 m-0 p-4">
+  
+  <h2 class="text-sm font-bold text-gray-600 uppercase mb-4">
+    <i class="fa-solid fa-users text-gray-500 mr-1"></i> Adicionar CRM / Cliente
+  </h2>
+
+  <form id="add-client-form" class="flex gap-2 mb-6" onsubmit="event.preventDefault();">
+    <input type="text" id="newClientName" placeholder="Nome do Cliente (Ex: Coca-Cola)" class="flex-1 p-2 text-sm rounded-md border border-gray-300 focus:border-primary focus:ring-1 focus:ring-primary shadow-sm" required/>
+    <button type="submit" class="bg-primary text-white text-sm font-semibold px-4 py-2 rounded-md hover:opacity-90 active:scale-95 transition-all">
+      Adicionar
+    </button>
+  </form>
+
+  <h3 class="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">Clientes Salvos</h3>
+  
+  <ul id="clients-list" class="space-y-2 max-h-[180px] overflow-y-auto pr-1">
+    <!-- Items injectados via js -->
+  </ul>
+
+  <script src="./settings.js"></script>
+</body>
+</html>

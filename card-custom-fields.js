@@ -1,8 +1,25 @@
 var t = TrelloPowerUp.iframe();
 
 t.render(function() {
-  t.get('card', 'shared', 'customFieldsData').then(function(data) {
+  Promise.all([
+    t.get('board', 'shared', 'clientsList'),
+    t.get('card', 'shared', 'customFieldsData')
+  ]).then(function(values) {
+    var clientsList = values[0] || [];
+    var data = values[1];
+    
+    // popular select clientProject
+    var clientSelect = document.getElementById('clientProject');
+    clientSelect.innerHTML = '<option value="">Selecione um cliente...</option>';
+    clientsList.forEach(function(c) {
+      var opt = document.createElement('option');
+      opt.value = c;
+      opt.textContent = c;
+      clientSelect.appendChild(opt);
+    });
+
     if (data) {
+      clientSelect.value = data.clientProject || '';
       document.getElementById('post-caption').value = data.postCaption || '';
       
       // Lidar com arrays ou strings no campo socialNetwork
@@ -23,6 +40,9 @@ t.render(function() {
       document.getElementById('final-creative-link').value = data.finalCreativeLink || '';
       document.getElementById('ready-media-link').value = data.readyMediaLink || '';
       document.getElementById('creative-format').value = data.creativeFormat || '';
+      document.getElementById('postDate').value = data.postDate || '';
+      document.getElementById('scheduledDate').value = data.scheduledDate || '';
+      updateLinkStyle();
 
       // Novos campos aba Anuncio e IA
       document.getElementById('ad-main-text').value = data.adMainText || '';
@@ -37,8 +57,33 @@ t.render(function() {
   }).then(function() {
     // Resize after populating all data
     t.sizeTo('#content');
+    document.getElementById('btn-save').disabled = true;
   });
 });
+
+// Ativar o botão salvar apenas quando houver alteração
+var formInputs = document.querySelectorAll('#trello-form input, #trello-form textarea, #trello-form select');
+formInputs.forEach(function(input) {
+  input.addEventListener('input', function() {
+    document.getElementById('btn-save').disabled = false;
+  });
+  input.addEventListener('change', function() {
+    document.getElementById('btn-save').disabled = false;
+    
+    if (input.id === 'final-creative-link') {
+      updateLinkStyle();
+    }
+  });
+});
+
+function updateLinkStyle() {
+  var creativeLink = document.getElementById('final-creative-link');
+  if (creativeLink && creativeLink.value.trim() !== '') {
+    creativeLink.classList.add('bg-green-100', 'border-green-400');
+  } else if (creativeLink) {
+    creativeLink.classList.remove('bg-green-100', 'border-green-400');
+  }
+}
 
 document.getElementById('btn-save').addEventListener('click', function() {
   var selectedNetworks = [];
@@ -57,6 +102,9 @@ document.getElementById('btn-save').addEventListener('click', function() {
     finalCreativeLink: document.getElementById('final-creative-link').value,
     readyMediaLink: document.getElementById('ready-media-link').value,
     creativeFormat: document.getElementById('creative-format').value,
+    postDate: document.getElementById('postDate').value,
+    scheduledDate: document.getElementById('scheduledDate').value,
+    clientProject: document.getElementById('clientProject').value,
     
     // Novos campos
     adMainText: document.getElementById('ad-main-text').value,
@@ -70,6 +118,7 @@ document.getElementById('btn-save').addEventListener('click', function() {
   };
 
   t.set('card', 'shared', 'customFieldsData', dataToSave).then(function() {
+    document.getElementById('btn-save').disabled = true;
     var feedback = document.getElementById('feedback-save');
     feedback.style.display = 'block';
     // Opcional para manter tamanho atualizado caso mude o height do feedback
