@@ -141,19 +141,29 @@
             <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
               <i class="fa-regular fa-comment-dots text-on-surface-variant/70"></i> Legenda do post
             </label>
-            <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="post-caption" title="Copiar legenda">
-              <span class="material-symbols-outlined text-[16px]">content_copy</span>
-              <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
-            </button>
+            <div class="flex gap-1 items-center">
+              <button type="button" class="btn-ai text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-6 h-6 rounded" data-target="post-caption" title="Gerar com IA">
+                <i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i>
+              </button>
+              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="post-caption" title="Copiar legenda">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+              </button>
+            </div>
           </div>
           <textarea id="post-caption" class="w-full min-h-[90px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
         </div>
 
         <div class="space-y-4">
-          <div class="space-y-1">
-            <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-              <i class="fa-solid fa-wand-magic-sparkles text-on-surface-variant/70"></i> Instruções e sugestões de design
-            </label>
+          <div class="space-y-1 relative">
+            <div class="flex justify-between items-center pr-1">
+              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-wand-magic-sparkles text-on-surface-variant/70"></i> Instruções e sugestões de design
+              </label>
+              <button type="button" class="btn-ai text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-6 h-6 rounded" data-target="art-guidelines" title="Gerar com IA">
+                <i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i>
+              </button>
+            </div>
             <textarea id="art-guidelines" class="w-full min-h-[60px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
           </div>
 
@@ -162,10 +172,15 @@
               <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-font text-on-surface-variant/70"></i> Texto na arte/video
               </label>
-              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="art-text" title="Copiar texto da arte">
-                <span class="material-symbols-outlined text-[16px]">content_copy</span>
-                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
-              </button>
+              <div class="flex gap-1 items-center">
+                <button type="button" class="btn-ai text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-6 h-6 rounded" data-target="art-text" title="Gerar com IA">
+                  <i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i>
+                </button>
+                <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="art-text" title="Copiar texto da arte">
+                  <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                  <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+                </button>
+              </div>
             </div>
             <textarea id="art-text" class="w-full min-h-[60px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
           </div>
@@ -227,10 +242,15 @@
             <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
               <i class="fa-solid fa-align-left text-on-surface-variant/70"></i> Texto Principal
             </label>
-            <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="ad-main-text" title="Copiar texto principal">
-              <span class="material-symbols-outlined text-[16px]">content_copy</span>
-              <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
-            </button>
+            <div class="flex gap-1 items-center">
+              <button type="button" class="btn-ai text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-6 h-6 rounded" data-target="ad-main-text" title="Gerar com IA">
+                <i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i>
+              </button>
+              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="ad-main-text" title="Copiar texto principal">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+              </button>
+            </div>
           </div>
           <textarea id="ad-main-text" placeholder="Insira a legenda do anúncio ou roteiro para gravação..." class="w-full min-h-[90px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
         </div>
@@ -240,10 +260,15 @@
             <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
               <i class="fa-solid fa-copy text-on-surface-variant/70"></i> Variações do texto
             </label>
-            <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="ad-variations" title="Copiar variações">
-              <span class="material-symbols-outlined text-[16px]">content_copy</span>
-              <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
-            </button>
+            <div class="flex gap-1 items-center">
+              <button type="button" class="btn-ai text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-6 h-6 rounded" data-target="ad-variations" title="Gerar com IA">
+                <i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i>
+              </button>
+              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="ad-variations" title="Copiar variações">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+              </button>
+            </div>
           </div>
           <textarea id="ad-variations" class="w-full min-h-[70px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
         </div>
@@ -256,21 +281,25 @@
             <p class="text-[11px] text-on-surface-variant font-medium mt-0.5 ml-5">Insira pelo menos 4 variações</p>
           </div>
           <div class="space-y-2 ml-5">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 01</span>
               <input type="text" id="ad-title-1" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-ai shrink-0 text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-7 h-7 rounded" data-target="ad-title-1" title="Gerar com IA"><i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i></button>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 02</span>
               <input type="text" id="ad-title-2" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-ai shrink-0 text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-7 h-7 rounded" data-target="ad-title-2" title="Gerar com IA"><i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i></button>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 03</span>
               <input type="text" id="ad-title-3" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-ai shrink-0 text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-7 h-7 rounded" data-target="ad-title-3" title="Gerar com IA"><i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i></button>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-1">
               <span class="text-[11px] text-on-surface-variant font-semibold w-12 shrink-0">Titulo 04</span>
               <input type="text" id="ad-title-4" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-ai shrink-0 text-purple-500 hover:text-purple-700 bg-purple-100/50 hover:bg-purple-100 transition-colors relative flex items-center justify-center w-7 h-7 rounded" data-target="ad-title-4" title="Gerar com IA"><i class="fa-solid fa-wand-magic-sparkles text-[12px]"></i></button>
             </div>
           </div>
         </div>

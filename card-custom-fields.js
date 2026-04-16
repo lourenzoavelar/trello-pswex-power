@@ -230,6 +230,35 @@ tabs.forEach(function(tab) {
     // Atualiza resize do iframe com timer leve por causa do 'hidden' display transition
     setTimeout(function() {
       t.sizeTo('#content');
-    }, 50);
+    }, 1500);
+  });
+});
+
+// Ações dos botões de IA
+var aiButtons = document.querySelectorAll('.btn-ai');
+aiButtons.forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    var targetId = this.getAttribute('data-target');
+    var targetField = document.getElementById(targetId);
+    var fieldValue = targetField ? encodeURIComponent(targetField.value) : '';
+    
+    // Ler os dados salvos globalmente para pegar aiAgentLink via cache (ou podemos ler do form diretamente)
+    var aiLinkInput = document.getElementById('ai-agent-link').value;
+    if (!aiLinkInput) {
+      alert("Por favor, cole o link do seu Agente de IA na aba 'IA' antes de usar os botões.");
+      return;
+    }
+
+    var context = t.getContext();
+    var boardId = context.board || '';
+    var listId = context.list || '';
+    var cardId = context.card || '';
+    
+    // Constrói a URL corretamente caso o link base já tenha parâmetros
+    var separator = aiLinkInput.includes('?') ? '&' : '?';
+    var finalUrl = aiLinkInput + separator + "field_id=" + targetId + "&board_id=" + boardId + "&list_id=" + listId + "&card_id=" + cardId + "&field_value=" + fieldValue;
+    
+    // Abre a URL em uma nova aba
+    window.open(finalUrl, '_blank');
   });
 });
