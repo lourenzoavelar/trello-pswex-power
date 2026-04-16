@@ -4,7 +4,7 @@ const ENABLE_MIGRATION_TOOL = false;
 
 TrelloPowerUp.initialize({
   'board-buttons': function(t, options) {
-    return [{
+    var buttons = [{
       icon: {
         dark: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png',
         light: 'https://cdn-icons-png.flaticon.com/512/2920/2920277.png'
@@ -18,9 +18,8 @@ TrelloPowerUp.initialize({
           fullscreen: true
         });
       }
-    };
+    }];
     
-    var buttons = [ganttButton];
     if (ENABLE_MIGRATION_TOOL) {
       buttons.push({
         icon: 'https://app.amazingpowerups.com/assets/section_icon_list-alt.svg',
@@ -37,9 +36,9 @@ TrelloPowerUp.initialize({
     return buttons;
   },
   'show-settings': function(t, options) {
-    return t.popup({
+    return t.modal({
       title: 'Configurações de Clientes/Projetos',
-      url: './settings.html',
+      url: t.signUrl('./settings.html'),
       height: 350
     });
   },
