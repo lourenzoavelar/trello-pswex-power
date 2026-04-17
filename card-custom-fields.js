@@ -54,8 +54,9 @@ t.render(function() {
       document.getElementById('final-creative-link').value = data.finalCreativeLink || '';
       document.getElementById('ready-media-link').value = data.readyMediaLink || '';
       document.getElementById('creative-format').value = data.creativeFormat || '';
-      document.getElementById('postDate').value = data.postDate || '';
-      document.getElementById('scheduledDate').value = data.scheduledDate || '';
+      var postDateEl = document.getElementById('postDate');
+      if (postDateEl) postDateEl.value = data.postDate || '';
+      
       updateLinkStyle();
 
       // Novos campos aba Anuncio e IA
@@ -115,28 +116,33 @@ function saveCustomFields() {
     }
   });
 
+  var safeGet = function(id) {
+    var el = document.getElementById(id);
+    return el ? el.value : '';
+  };
+
   var dataToSave = {
-    postCaption: document.getElementById('post-caption').value,
+    postCaption: safeGet('post-caption'),
     socialNetwork: selectedNetworks,
-    artGuidelines: document.getElementById('art-guidelines').value,
-    artText: document.getElementById('art-text').value,
-    finalCreativeLink: document.getElementById('final-creative-link').value,
-    readyMediaLink: document.getElementById('ready-media-link').value,
-    creativeFormat: document.getElementById('creative-format').value,
-    postDate: document.getElementById('postDate').value,
-    scheduledDate: document.getElementById('scheduledDate').value,
-    clientProject: document.getElementById('clientProject').value,
+    artGuidelines: safeGet('art-guidelines'),
+    artText: safeGet('art-text'),
+    finalCreativeLink: safeGet('final-creative-link'),
+    readyMediaLink: safeGet('ready-media-link'),
+    creativeFormat: safeGet('creative-format'),
+    postDate: safeGet('postDate'),
+    clientProject: safeGet('clientProject'),
     
     // Novos campos
-    adMainText: document.getElementById('ad-main-text').value,
-    adVariations: document.getElementById('ad-variations').value,
-    adTitle1: document.getElementById('ad-title-1').value,
-    adTitle2: document.getElementById('ad-title-2').value,
-    adTitle3: document.getElementById('ad-title-3').value,
-    adTitle4: document.getElementById('ad-title-4').value,
-    aiAgentLink: document.getElementById('ai-agent-link').value,
-    aiPromptSuggest: document.getElementById('ai-prompt-suggest').value
+    adMainText: safeGet('ad-main-text'),
+    adVariations: safeGet('ad-variations'),
+    adTitle1: safeGet('ad-title-1'),
+    adTitle2: safeGet('ad-title-2'),
+    adTitle3: safeGet('ad-title-3'),
+    adTitle4: safeGet('ad-title-4'),
+    aiAgentLink: safeGet('ai-agent-link'),
+    aiPromptSuggest: safeGet('ai-prompt-suggest')
   };
+
 
   t.set('card', 'shared', 'customFieldsData', dataToSave).then(function() {
     document.getElementById('btn-save').disabled = true;
