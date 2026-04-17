@@ -55,34 +55,38 @@
 <body class="bg-surface font-body text-on-surface selection:bg-primary-container selection:text-on-primary m-0 overflow-x-hidden">
   <div id="content" class="bg-surface-container-lowest w-full min-h-screen">
     
-    <!-- Header Tabs -->
-    <div class="flex border-b border-outline-variant/30 px-3 bg-surface-container-lowest sticky top-0 z-10">
-      <button id="tab-post" class="tab-btn active flex-1 font-semibold text-[13px] py-3 border-b-2 border-primary text-primary transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-pen-nib text-[14px]"></i> Publicação e Design
-      </button>
-      <button id="tab-ad" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-bullhorn text-[14px]"></i> Anúncio e Copy
-      </button>
-      <button id="tab-ia" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-        <i class="fa-solid fa-wand-magic-sparkles text-[14px]"></i> IA
-      </button>
-    </div>
-
-    <!-- Form Content -->
-    <form id="trello-form" class="p-4 space-y-4" onsubmit="event.preventDefault();">
+    <form id="trello-form" class="space-y-0" onsubmit="event.preventDefault();">
 
       <!-- Cliente / Projeto (Global) -->
-      <div class="space-y-1 mb-2">
-        <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-          <i class="fa-solid fa-briefcase text-on-surface-variant/70"></i> Cliente/Projeto
-        </label>
-        <select id="clientProject" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low cursor-pointer shadow-sm">
-          <option value="">Selecione um cliente...</option>
-        </select>
+      <div class="p-4 pb-2 bg-surface-container-lowest">
+        <div class="space-y-1 mb-2">
+          <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-briefcase text-on-surface-variant/70"></i> Cliente/Projeto
+          </label>
+          <select id="clientProject" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low cursor-pointer shadow-sm">
+            <option value="">Selecione um cliente...</option>
+          </select>
+        </div>
       </div>
 
-      <!-- ABA 1: CAMPOS DO POST -->
-      <div id="content-post" class="tab-content block space-y-5">
+      <!-- Header Tabs -->
+      <div class="flex border-b border-outline-variant/30 px-3 bg-surface-container-lowest sticky top-0 z-10">
+        <button id="tab-post" class="tab-btn active flex-1 font-semibold text-[13px] py-3 border-b-2 border-primary text-primary transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-pen-nib text-[14px]"></i> Publicação e Design
+        </button>
+        <button id="tab-ad" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-bullhorn text-[14px]"></i> Anúncio e Copy
+        </button>
+        <button id="tab-ia" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-wand-magic-sparkles text-[14px]"></i> IA
+        </button>
+      </div>
+
+      <!-- Form Content -->
+      <div class="p-4 space-y-4">
+
+        <!-- ABA 1: CAMPOS DO POST -->
+        <div id="content-post" class="tab-content block space-y-5">
         
         <!-- Redes Sociais -->
         <div class="space-y-2">
@@ -327,9 +331,10 @@
           <textarea id="ai-prompt-suggest" class="w-full min-h-[140px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
         </div>
       </div>
+      </div>
 
       <!-- Action Button (Global) -->
-      <div class="pt-2 sticky bottom-0 bg-surface-container-lowest pb-2 z-10 transition-all">
+      <div class="p-4 pt-2 sticky bottom-0 bg-surface-container-lowest pb-2 z-10 transition-all">
         <button id="btn-save" disabled class="w-full bg-primary disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed text-white text-[13px] font-bold py-3 rounded-md shadow-sm hover:opacity-90 hover:-translate-y-[1px] active:scale-[0.99] disabled:hover:opacity-100 disabled:hover:translate-y-0 disabled:active:scale-100 transition-all flex items-center justify-center gap-1.5" type="button">
           <i class="fa-solid fa-floppy-disk"></i> Salvar
         </button>
