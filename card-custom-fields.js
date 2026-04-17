@@ -211,7 +211,7 @@ function showCopyFeedback(btn, textArea) {
 }
 
 // Lógica das Abas (Tabs) 
-const tabs = ['post', 'ad', 'ia'];
+const tabs = ['post', 'ad', 'ia', 'publish'];
 tabs.forEach(function(tab) {
   document.getElementById('tab-' + tab).addEventListener('click', function() {
     // Esconde todos
@@ -296,4 +296,74 @@ aiButtons.forEach(function(btn) {
       window.open(finalUrl, '_blank');
     }
   });
+});
+
+// Ações dos botões de N8N
+function triggerN8nWebhook(webhookType, btnId) {
+  var btn = document.getElementById(btnId);
+  if (!btn) return;
+
+  var originalText = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-[18px]"></i> Enviando...';
+  
+  var feedbackContainer = document.getElementById('publish-feedback');
+  var errorContainer = document.getElementById('publish-error');
+  
+  if (feedbackContainer) feedbackContainer.classList.add('hidden');
+  if (errorContainer) errorContainer.classList.add('hidden');
+
+  t.get('board', 'shared', webhookType).then(function(url) {
+    if (!url) {
+      if (errorContainer) {
+        errorContainer.innerText = '⚠️ Configure os Endpoints (URL) nas Configurações do Power-Up.';
+        errorContainer.classList.remove('hidden');
+      }
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+      return t.sizeTo('#content');
+    }
+
+    var context = t.getContext();
+    var payload = {
+      cardId: context.card || '',
+      boardId: context.board || '',
+      action: webhookType === 'n8nPublishUrl' ? 'publish' : 'download'
+    };
+
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    }).then(function(response) {
+      if (response.ok) {
+        if (feedbackContainer) feedbackContainer.classList.remove('hidden');
+      } else {
+        if (errorContainer) {
+          errorContainer.innerText = '⚠️ Erro ao enviar requisição (' + response.status + ')';
+          errorContainer.classList.remove('hidden');
+        }
+      }
+    }).catch(function(err) {
+      console.error(err);
+      if (errorContainer) {
+        errorContainer.innerText = '⚠️ Falha de conexão com o servidor n8n';
+        errorContainer.classList.remove('hidden');
+      }
+    }).finally(function() {
+      btn.disabled = false;
+      btn.innerHTML = originalText;
+      t.sizeTo('#content');
+    });
+  });
+}
+
+document.getElementById('btn-n8n-publish').addEventListener('click', function() {
+  triggerN8nWebhook('n8nPublishUrl', 'btn-n8n-publish');
+});
+
+document.getElementById('btn-n8n-download').addEventListener('click', function() {
+  triggerN8nWebhook('n8nDownloadUrl', 'btn-n8n-download');
 });

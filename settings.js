@@ -43,11 +43,23 @@ function saveClients(clients) {
 }
 
 t.render(function() {
-    t.get('board', 'shared', 'clientsList').then(function(clients) {
-        var currentClients = clients || [];
+    Promise.all([
+        t.get('board', 'shared', 'clientsList'),
+        t.get('board', 'shared', 'n8nPublishUrl'),
+        t.get('board', 'shared', 'n8nDownloadUrl')
+    ]).then(function(values) {
+        var clients = values[0] || [];
+        var pubUrl = values[1] || '';
+        var downUrl = values[2] || '';
+
+        var currentClients = clients;
         renderClients(currentClients);
         
-        document.getElementById('add-client-form').onsubmit = function() {
+        document.getElementById('n8nPublishUrl').value = pubUrl;
+        document.getElementById('n8nDownloadUrl').value = downUrl;
+
+        document.getElementById('add-client-form').onsubmit = function(e) {
+            e.preventDefault();
             var input = document.getElementById('newClientName');
             var val = input.value.trim();
             if (val) {
@@ -57,6 +69,23 @@ t.render(function() {
                 }
                 input.value = '';
             }
+        };
+
+        document.getElementById('endpoints-form').onsubmit = function(e) {
+            e.preventDefault();
+            var pub = document.getElementById('n8nPublishUrl').value.trim();
+            var down = document.getElementById('n8nDownloadUrl').value.trim();
+            
+            Promise.all([
+                t.set('board', 'shared', 'n8nPublishUrl', pub),
+                t.set('board', 'shared', 'n8nDownloadUrl', down)
+            ]).then(function() {
+                var feedback = document.getElementById('feedback-endpoints');
+                feedback.classList.remove('hidden');
+                setTimeout(function() {
+                    feedback.classList.add('hidden');
+                }, 3000);
+            });
         };
     });
 });

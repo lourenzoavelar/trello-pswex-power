@@ -70,15 +70,18 @@
       </div>
 
       <!-- Header Tabs -->
-      <div class="flex border-b border-outline-variant/30 px-3 bg-surface-container-lowest sticky top-0 z-10">
-        <button id="tab-post" class="tab-btn active flex-1 font-semibold text-[13px] py-3 border-b-2 border-primary text-primary transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-          <i class="fa-solid fa-pen-nib text-[14px]"></i> Publicação e Design
+      <div class="flex border-b border-outline-variant/30 px-3 bg-surface-container-lowest sticky top-0 z-10 w-full overflow-x-auto whitespace-nowrap scrollbar-hide">
+        <button id="tab-post" class="tab-btn active flex-none px-4 font-semibold text-[13px] py-3 border-b-2 border-primary text-primary transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-pen-nib text-[14px]"></i> Design
         </button>
-        <button id="tab-ad" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
-          <i class="fa-solid fa-bullhorn text-[14px]"></i> Anúncio e Copy
+        <button id="tab-ad" class="tab-btn flex-none px-4 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-bullhorn text-[14px]"></i> Copy
         </button>
-        <button id="tab-ia" class="tab-btn flex-1 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+        <button id="tab-ia" class="tab-btn flex-none px-4 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
           <i class="fa-solid fa-wand-magic-sparkles text-[14px]"></i> IA
+        </button>
+        <button id="tab-publish" class="tab-btn flex-none px-4 font-medium text-[13px] py-3 border-b-2 border-transparent text-on-surface-variant hover:text-on-surface transition-colors cursor-pointer flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-paper-plane text-[14px]"></i> Publicação
         </button>
       </div>
 
@@ -91,7 +94,7 @@
         <!-- Redes Sociais -->
         <div class="space-y-2">
           <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-share-nodes text-on-surface-variant/70"></i> Publicar nos Seguintes Canais
+            <i class="fa-solid fa-share-nodes text-on-surface-variant/70"></i> Para os seguintes canais
           </label>
           <div class="flex flex-wrap gap-2">
             <label class="cursor-pointer relative group" title="Instagram">
@@ -222,18 +225,12 @@
             </select>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+          <div class="pt-2">
             <div class="space-y-1">
               <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-regular fa-calendar-check text-on-surface-variant/70"></i> Agendar postagem para
               </label>
               <input type="date" id="postDate" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
-            </div>
-            <div class="space-y-1">
-              <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
-                <i class="fa-solid fa-clock text-on-surface-variant/70"></i> Agendado para
-              </label>
-              <input type="date" id="scheduledDate" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
             </div>
           </div>
         </div>
@@ -329,6 +326,40 @@
             </button>
           </div>
           <textarea id="ai-prompt-suggest" class="w-full min-h-[140px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
+        </div>
+      </div>
+
+      <!-- ABA 4: PUBLICACAO -->
+      <div id="content-publish" class="tab-content hidden space-y-5">
+        <div class="space-y-4">
+          <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
+            <i class="fa-solid fa-rocket text-on-surface-variant/70"></i> Ações de Publicação Automática
+          </label>
+          <div class="flex flex-col gap-3">
+            <button type="button" id="btn-n8n-publish" class="w-full relative flex items-center justify-center gap-2 rounded-md bg-[#E1306C] text-white p-3 font-semibold shadow hover:opacity-90 transition-opacity">
+              <i class="fa-brands fa-instagram text-[18px]"></i> Publicar agora
+            </button>
+            <button type="button" disabled class="w-full relative flex items-center justify-center gap-2 rounded-md bg-surface-container-low text-on-surface-variant border border-outline-variant p-3 font-semibold opacity-50 cursor-not-allowed">
+              <i class="fa-brands fa-facebook-f text-[18px]"></i> Em breve
+            </button>
+            <button type="button" disabled class="w-full relative flex items-center justify-center gap-2 rounded-md bg-surface-container-low text-on-surface-variant border border-outline-variant p-3 font-semibold opacity-50 cursor-not-allowed">
+              <i class="fa-brands fa-youtube text-[18px]"></i> Em breve
+            </button>
+            <button type="button" disabled class="w-full relative flex items-center justify-center gap-2 rounded-md bg-surface-container-low text-on-surface-variant border border-outline-variant p-3 font-semibold opacity-50 cursor-not-allowed">
+              <i class="fa-brands fa-tiktok text-[18px]"></i> Em breve
+            </button>
+            <button type="button" disabled class="w-full relative flex items-center justify-center gap-2 rounded-md bg-surface-container-low text-on-surface-variant border border-outline-variant p-3 font-semibold opacity-50 cursor-not-allowed">
+              <i class="fa-brands fa-linkedin-in text-[18px]"></i> Em breve
+            </button>
+
+            <hr class="border-outline-variant/30 my-2">
+
+            <button type="button" id="btn-n8n-download" class="w-full relative flex items-center justify-center gap-2 rounded-md border border-primary text-primary p-3 font-semibold hover:bg-primary/5 transition-colors">
+              <i class="fa-solid fa-download text-[18px]"></i> Apenas Download
+            </button>
+          </div>
+          <div id="publish-feedback" class="hidden text-xs text-green-600 font-semibold text-center w-full mt-2">✅ Solicitação enviada!</div>
+          <div id="publish-error" class="hidden text-xs text-red-500 font-semibold text-center w-full mt-2">⚠️ Configure os Endpoints (URL) nas Configurações do Power-Up.</div>
         </div>
       </div>
       </div>
