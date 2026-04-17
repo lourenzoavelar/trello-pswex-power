@@ -269,10 +269,13 @@ aiButtons.forEach(function(btn) {
     }
     
     var finalPrompt = promptParts.join('\n\n');
-    var encodedPrompt = encodeURIComponent(finalPrompt);
+    
+    var params = new URLSearchParams();
+    params.append('hints', 'search');
+    params.append('q', finalPrompt);
     
     var separator = aiLinkInput.includes('?') ? '&' : '?';
-    var finalUrl = aiLinkInput + separator + "q=" + encodedPrompt;
+    var finalUrl = aiLinkInput + separator + params.toString();
     
     // Mostra feedback visual no botão de que foi copiado
     var originalHTML = this.innerHTML;
