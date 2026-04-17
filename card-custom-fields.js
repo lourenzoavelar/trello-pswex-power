@@ -340,6 +340,28 @@ function triggerN8nWebhook(webhookType, btnId) {
     }).then(function(response) {
       if (response.ok) {
         if (feedbackContainer) feedbackContainer.classList.remove('hidden');
+        
+        // Processar retorno do webhook para baixar arquivos solicitados
+        response.json().then(function(data) {
+          if (Array.isArray(data)) {
+            data.forEach(function(item) {
+              if (item.job && Array.isArray(item.job.urls)) {
+                item.job.urls.forEach(function(downloadUrl) {
+                  var link = document.createElement('a');
+                  link.href = downloadUrl;
+                  link.setAttribute('download', '');
+                  link.setAttribute('target', '_blank');
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                });
+              }
+            });
+          }
+        }).catch(function(e) {
+          console.log("Resposta n8n sem JSON de download.", e);
+        });
+
       } else {
         if (errorContainer) {
           errorContainer.innerText = '⚠️ Erro ao enviar requisição (' + response.status + ')';
