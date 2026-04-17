@@ -363,10 +363,19 @@ function triggerN8nWebhook(webhookType, btnId) {
         });
 
       } else {
-        if (errorContainer) {
-          errorContainer.innerText = '⚠️ Erro ao enviar requisição (' + response.status + ')';
-          errorContainer.classList.remove('hidden');
-        }
+        response.text().then(function(errText) {
+          if (errorContainer) {
+            errorContainer.innerText = errText ? '⚠️ ' + errText : '⚠️ Erro ao enviar requisição (' + response.status + ')';
+            errorContainer.classList.remove('hidden');
+            t.sizeTo('#content');
+          }
+        }).catch(function() {
+          if (errorContainer) {
+            errorContainer.innerText = '⚠️ Erro ao enviar requisição (' + response.status + ')';
+            errorContainer.classList.remove('hidden');
+            t.sizeTo('#content');
+          }
+        });
       }
     }).catch(function(err) {
       console.error(err);
