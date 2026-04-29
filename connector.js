@@ -96,40 +96,8 @@ async function processIaCard(t) {
     await t.set('card', 'shared', 'iaSynced', true);
     console.log('[IA] iaSynced marcado como true.');
 
-    // --- PASSO 7: Limpar descrição (SEMPRE APÓS salvar — nunca antes) ---
-    const cleanDesc = desc
-      .replace(/\[IA_PROCESSAR\]/g, '')
-      .replace(/IA_PLUGIN_DATA_START[\s\S]*?IA_PLUGIN_DATA_END/g, '')
-      .trim();
-
-    const finalDesc = cleanDesc.length > 0
-      ? cleanDesc
-      : 'Card criado automaticamente pela IA.';
-
-    try {
-      const restApi = t.getRestApi();
-      const token = await restApi.getToken();
-
-      const response = await fetch(
-        `https://api.trello.com/1/cards/${cardId}?key=${TRELLO_APP_KEY}&token=${token}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ desc: finalDesc })
-        }
-      );
-
-      if (!response.ok) {
-        const errText = await response.text();
-        console.error('[IA] Falha ao atualizar descrição:', response.status, errText);
-      } else {
-        console.log('[IA] Descrição limpa com sucesso. Texto final:', finalDesc);
-      }
-    } catch (apiErr) {
-      // A limpeza da descrição falhou, mas os dados JÁ foram salvos
-      // iaSynced=true evita reprocessamento; a descrição suja é inofensiva
-      console.error('[IA] Erro ao limpar descrição via API (dados já salvos):', apiErr.message);
-    }
+    // Limpeza de descrição: pendente (requer REST API com appKey ou delegação ao n8n)
+    console.log('[IA] Processamento concluído. Descrição mantida com marcadores (limpeza pendente).');
 
   } catch (err) {
     console.error('[IA] Erro inesperado durante processamento do card:', err);
