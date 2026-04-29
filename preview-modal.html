@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Preview da Publicação</title>
+    <script src="https://p.trellocdn.com/power-up.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      :root {
+        --color-primary: #00A3BF;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 flex flex-col h-screen overflow-hidden text-gray-800">
+    <!-- Header visual / tabs ou algo similar -->
+    <div class="px-5 py-4 border-b border-gray-300 bg-white shrink-0 shadow-sm flex items-center justify-between">
+      <h2 class="text-lg font-bold text-gray-700"><i class="fa-solid fa-eye text-[--color-primary] mr-2"></i> Confirmar Publicação</h2>
+    </div>
+
+    <!-- Scrollable content -->
+    <div class="flex-1 overflow-y-auto p-5 pb-24 space-y-5">
+      <!-- Media Preview Wrapper -->
+      <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm">
+        <label class="text-[12px] font-bold text-gray-500 uppercase tracking-wider block mb-2">
+          <i class="fa-solid fa-image opacity-70 mr-1"></i> Mídia
+        </label>
+        <div id="media-preview-container" class="w-full bg-gray-100 rounded flex flex-col items-center justify-center border border-dashed border-gray-300 min-h-[250px] overflow-hidden relative">
+          <i class="fa-solid fa-spinner fa-spin text-gray-400 text-3xl mb-2" id="media-loading"></i>
+          <p class="text-sm text-gray-500" id="media-text">Procurando anexo no card...</p>
+        </div>
+      </div>
+
+      <!-- Caption Editor -->
+      <div class="bg-white rounded-lg border border-gray-300 p-3 shadow-sm">
+        <label class="text-[12px] font-bold text-gray-500 uppercase tracking-wider flex items-center justify-between mb-2">
+          <span><i class="fa-solid fa-comment-dots opacity-70 mr-1"></i> Legenda do Post</span>
+        </label>
+        <textarea id="modal-caption" class="w-full min-h-[140px] p-3 text-[14px] rounded border border-gray-300 focus:border-[--color-primary] focus:ring-1 focus:ring-[--color-primary] text-gray-700 bg-gray-50 resize-y outline-none" placeholder="Escreva a legenda..."></textarea>
+      </div>
+
+      <!-- Error / Feedback Messages -->
+      <div id="modal-feedback" class="hidden text-sm text-green-600 font-semibold p-3 bg-green-50 border border-green-200 rounded-lg text-center shadow-sm">✅ Solicitação enviada com sucesso! Você já pode fechar.</div>
+      <div id="modal-error" class="hidden text-sm text-red-600 font-semibold p-3 bg-red-50 border border-red-200 rounded-lg text-center shadow-sm">⚠️ Erro ao enviar.</div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-300 bg-white flex justify-end gap-3 shadow-lg">
+      <button id="btn-cancel" class="px-5 py-2.5 rounded font-semibold text-gray-600 bg-gray-100 hover:bg-gray-200 border border-gray-300 transition-colors">Cancelar</button>
+      <button id="btn-confirm-publish" class="px-5 py-2.5 rounded font-bold text-white bg-[#E1306C] hover:bg-[#c1265b] shadow transition-colors flex items-center gap-2">
+        <i class="fa-brands fa-instagram"></i> Confirmar e Publicar
+      </button>
+    </div>
+
+    <script src="./preview-modal.js"></script>
+  </body>
+</html>

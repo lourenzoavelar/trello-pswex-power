@@ -192,19 +192,40 @@
             <textarea id="art-text" class="w-full min-h-[60px] p-2.5 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low resize-y shadow-sm"></textarea>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div class="space-y-1">
+          <div class="space-y-1 relative">
+            <div class="flex justify-between items-center pr-1">
               <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-link text-on-surface-variant/70"></i> Criativo Finalizado
               </label>
-              <input type="url" id="final-creative-link" placeholder="Link da imagem/vídeo" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="final-creative-link" title="Copiar link do criativo">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+              </button>
             </div>
-            <div class="space-y-1">
+            <input type="url" id="final-creative-link" placeholder="Link da imagem/vídeo" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+            <a id="final-creative-link-anchor" href="#" target="_blank" rel="noopener noreferrer"
+               class="hidden mt-1 flex items-center gap-1.5 text-[12px] text-primary font-medium hover:underline truncate">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+              <span id="final-creative-link-text" class="truncate"></span>
+            </a>
+          </div>
+
+          <div class="space-y-1 relative">
+            <div class="flex justify-between items-center pr-1">
               <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-download text-on-surface-variant/70"></i> Mídia Pronta
               </label>
-              <input type="url" id="ready-media-link" placeholder="Link (Download)" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+              <button type="button" class="btn-copy text-on-surface-variant hover:text-primary transition-colors relative flex items-center justify-center w-6 h-6 rounded hover:bg-surface-container-high" data-target="ready-media-link" title="Copiar link da mídia">
+                <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                <span class="tooltip-copy absolute -top-7 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-[10px] py-1 px-2 rounded opacity-0 transition-opacity pointer-events-none whitespace-nowrap z-20">Copiado!</span>
+              </button>
             </div>
+            <input type="url" id="ready-media-link" placeholder="Link (Download)" class="w-full p-2 text-[13px] rounded-md border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary text-on-surface bg-surface-container-low shadow-sm"/>
+            <a id="ready-media-link-anchor" href="#" target="_blank" rel="noopener noreferrer"
+               class="hidden mt-1 flex items-center gap-1.5 text-[12px] text-primary font-medium hover:underline truncate">
+              <i class="fa-solid fa-arrow-up-right-from-square text-[11px]"></i>
+              <span id="ready-media-link-text" class="truncate"></span>
+            </a>
           </div>
           <div class="space-y-1">
             <label class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider flex items-center gap-1.5">

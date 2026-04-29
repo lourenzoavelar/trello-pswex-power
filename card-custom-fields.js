@@ -81,11 +81,14 @@ var formInputs = document.querySelectorAll('#trello-form input, #trello-form tex
 formInputs.forEach(function(input) {
   input.addEventListener('input', function() {
     document.getElementById('btn-save').disabled = false;
+    if (input.id === 'final-creative-link' || input.id === 'ready-media-link') {
+      updateLinkStyle();
+    }
   });
   input.addEventListener('change', function() {
     document.getElementById('btn-save').disabled = false;
     
-    if (input.id === 'final-creative-link') {
+    if (input.id === 'final-creative-link' || input.id === 'ready-media-link') {
       updateLinkStyle();
     }
     
@@ -95,11 +98,27 @@ formInputs.forEach(function(input) {
 });
 
 function updateLinkStyle() {
-  var creativeLink = document.getElementById('final-creative-link');
-  if (creativeLink && creativeLink.value.trim() !== '') {
-    creativeLink.classList.add('bg-green-100', 'border-green-400');
-  } else if (creativeLink) {
-    creativeLink.classList.remove('bg-green-100', 'border-green-400');
+  updateLinkAnchor('final-creative-link', 'final-creative-link-anchor', 'final-creative-link-text');
+  updateLinkAnchor('ready-media-link', 'ready-media-link-anchor', 'ready-media-link-text');
+}
+
+function updateLinkAnchor(inputId, anchorId, textSpanId) {
+  var input = document.getElementById(inputId);
+  var anchor = document.getElementById(anchorId);
+  var textSpan = document.getElementById(textSpanId);
+  if (!input || !anchor || !textSpan) return;
+
+  var val = input.value.trim();
+  if (val !== '') {
+    input.classList.add('bg-green-100', 'border-green-400');
+    anchor.href = val;
+    textSpan.textContent = val;
+    anchor.classList.remove('hidden');
+  } else {
+    input.classList.remove('bg-green-100', 'border-green-400');
+    anchor.classList.add('hidden');
+    anchor.href = '#';
+    textSpan.textContent = '';
   }
 }
 
@@ -396,9 +415,21 @@ function triggerN8nWebhook(webhookType, btnId) {
     });
   });
 }
-
 document.getElementById('btn-n8n-publish').addEventListener('click', function() {
-  triggerN8nWebhook('n8nPublishUrl', 'btn-n8n-publish');
+  saveCustomFields();
+  
+  var caption = document.getElementById('post-caption').value || '';
+  var context = t.getContext();
+  
+  t.modal({
+    url: './preview-modal.html',
+    height: 600,
+    args: { 
+      caption: caption,
+      cardId: context.card || '',
+      boardId: context.board || ''
+    }
+  });
 });
 
 document.getElementById('btn-n8n-download').addEventListener('click', function() {
