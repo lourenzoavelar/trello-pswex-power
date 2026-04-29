@@ -2,6 +2,10 @@
 
 const ENABLE_MIGRATION_TOOL = false;
 
+// Chave pública do Power-Up — obtenha em: https://trello.com/power-ups/admin
+// Troque pela sua appKey real (é pública, pode ficar no código)
+const TRELLO_APP_KEY = 'SUA_APP_KEY_AQUI';
+
 // ---------------------------------------------------------------------------
 // Processamento automático de cards criados por IA
 // ---------------------------------------------------------------------------
@@ -107,7 +111,7 @@ async function processIaCard(t) {
       const token = await restApi.getToken();
 
       const response = await fetch(
-        `https://api.trello.com/1/cards/${cardId}?token=${token}`,
+        `https://api.trello.com/1/cards/${cardId}?key=${TRELLO_APP_KEY}&token=${token}`,
         {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
@@ -226,4 +230,7 @@ TrelloPowerUp.initialize({
       }
     };
   },
+}, {
+  appKey: TRELLO_APP_KEY,
+  appName: 'Gráfico Gantt Power-Up'
 });
