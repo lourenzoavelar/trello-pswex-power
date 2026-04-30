@@ -3,10 +3,58 @@ var t = TrelloPowerUp.iframe();
 t.render(function() {
   Promise.all([
     t.get('board', 'shared', 'clientsList'),
-    t.get('card', 'shared', 'customFieldsData')
+    t.get('card', 'shared', 'customFieldsData'),
+    t.get('card', 'shared', 'iaSynced'),
+    t.card('desc')
   ]).then(function(values) {
-    var clientsList = values[0] || [];
-    var data = values[1];
+    var clientsList   = values[0] || [];
+    var data          = values[1];
+    var iaSynced      = values[2];
+    var cardDesc      = (values[3] && values[3].desc) || '';
+
+    // -----------------------------------------------------------------------
+    // Processamento automático de cards criados por IA
+    // Roda aqui, dentro do render, para eliminar timing issues:
+    //   1. detecta [IA_PROCESSAR] na descrição
+    //   2. parseia o JSON
+    //   3. salva customFieldsData + iaSynced num único t.set() (sem colisão)
+    //   4. usa o JSON parseado direto para popular os campos (sem re-render)
+    // -----------------------------------------------------------------------
+    function processarCardIA() {
+      if (iaSynced) return Promise.resolve(data);
+      if (!cardDesc || !cardDesc.trimStart().startsWith('[IA_PROCESSAR]')) return Promise.resolve(data);
+
+      console.log('[IA] Detectado card para processamento automático.');
+
+      var jsonMatch = cardDesc.match(/IA_PLUGIN_DATA_START([\s\S]*?)IA_PLUGIN_DATA_END/);
+      if (!jsonMatch) {
+        console.warn('[IA] Marcadores IA_PLUGIN_DATA_START / IA_PLUGIN_DATA_END não encontrados.');
+        return Promise.resolve(data);
+      }
+
+      var rawJson = jsonMatch[1].trim();
+      var parsed;
+      try {
+        parsed = JSON.parse(rawJson);
+      } catch (e) {
+        console.error('[IA] JSON inválido — campos não serão alterados:', e.message);
+        return Promise.resolve(data);
+      }
+
+      console.log('[IA] JSON parseado com sucesso:', parsed);
+
+      // Salva customFieldsData + iaSynced numa única chamada (sem colisão)
+      return t.set('card', 'shared', {
+        customFieldsData: parsed,
+        iaSynced: true
+      }).then(function() {
+        console.log('[IA] Dados salvos no pluginData.');
+        return parsed; // usa o dado parseado direto, sem reler
+      });
+    }
+
+    return processarCardIA().then(function(dadosFinais) {
+      data = dadosFinais; // pode ser o original ou o recém-parseado
     
     // popular select clientProject
     var clientSelect = document.getElementById('clientProject');
@@ -73,8 +121,9 @@ t.render(function() {
     // Resize after populating all data
     t.sizeTo('#content');
     document.getElementById('btn-save').disabled = true;
-  });
-});
+  });   // fim de processarCardIA().then chain
+  });   // fim de Promise.all().then(function(values)
+});     // fim de t.render
 
 // Ativar o botão salvar apenas quando houver alteração
 var formInputs = document.querySelectorAll('#trello-form input, #trello-form textarea, #trello-form select');
