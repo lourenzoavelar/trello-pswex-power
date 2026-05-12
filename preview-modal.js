@@ -3,7 +3,24 @@ var t = window.TrelloPowerUp.iframe();
 // Obter argumentos enviados na abertura do modal
 var initialCaption = t.arg('caption') || '';
 
-document.getElementById('modal-caption').value = initialCaption;
+var modalCaption = document.getElementById('modal-caption');
+modalCaption.value = initialCaption;
+
+function autoResizeTextarea(ta) {
+  if (!ta || ta.tagName.toLowerCase() !== 'textarea') return;
+  ta.style.resize = 'none';
+  ta.style.overflow = 'hidden';
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
+setTimeout(function() {
+  autoResizeTextarea(modalCaption);
+}, 50);
+
+modalCaption.addEventListener('input', function() {
+  autoResizeTextarea(this);
+});
 
 // Botões
 var btnConfirm = document.getElementById('btn-confirm-publish');

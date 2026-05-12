@@ -1,5 +1,13 @@
 var t = TrelloPowerUp.iframe();
 
+function autoResizeTextarea(ta) {
+  if (!ta || ta.tagName.toLowerCase() !== 'textarea') return;
+  ta.style.resize = 'none';
+  ta.style.overflow = 'hidden';
+  ta.style.height = 'auto';
+  ta.style.height = ta.scrollHeight + 'px';
+}
+
 t.render(function() {
   Promise.all([
     t.get('board', 'shared', 'clientsList'),
@@ -119,6 +127,12 @@ t.render(function() {
     }
   }).then(function() {
     // Resize after populating all data
+    var textAreas = document.querySelectorAll('#trello-form textarea');
+    textAreas.forEach(function(ta) {
+      if (ta.offsetParent !== null) { // se visível
+        autoResizeTextarea(ta);
+      }
+    });
     t.sizeTo('#content');
     document.getElementById('btn-save').disabled = true;
   });   // fim de processarCardIA().then chain
@@ -132,6 +146,10 @@ formInputs.forEach(function(input) {
     document.getElementById('btn-save').disabled = false;
     if (input.id === 'final-creative-link' || input.id === 'ready-media-link') {
       updateLinkStyle();
+    }
+    if (input.tagName.toLowerCase() === 'textarea') {
+      autoResizeTextarea(input);
+      t.sizeTo('#content');
     }
   });
   input.addEventListener('change', function() {
@@ -301,10 +319,16 @@ tabs.forEach(function(tab) {
     document.getElementById('tab-' + tab).classList.add('active', 'border-primary', 'text-primary');
     document.getElementById('tab-' + tab).classList.remove('border-transparent', 'text-on-surface-variant');
     
+    // Resize textareas inside the newly visible tab
+    var visibleTextAreas = document.querySelectorAll('#content-' + tab + ' textarea');
+    visibleTextAreas.forEach(function(ta) {
+      autoResizeTextarea(ta);
+    });
+
     // Atualiza resize do iframe com timer leve por causa do 'hidden' display transition
     setTimeout(function() {
       t.sizeTo('#content');
-    }, 1500);
+    }, 100);
   });
 });
 
