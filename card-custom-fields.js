@@ -20,6 +20,11 @@ t.render(function() {
     var iaSynced      = values[2];
     var cardDesc      = (values[3] && values[3].desc) || '';
 
+    // Normalização caso o dado já tenha sido salvo com o wrapper (retrocompatibilidade)
+    if (data && data.customFieldsData && !data.postCaption) {
+      data = data.customFieldsData;
+    }
+
     // -----------------------------------------------------------------------
     // Processamento automático de cards criados por IA
     // Roda aqui, dentro do render, para eliminar timing issues:
@@ -43,7 +48,9 @@ t.render(function() {
       var rawJson = jsonMatch[1].trim();
       var parsed;
       try {
-        parsed = JSON.parse(rawJson);
+        var rawParsed = JSON.parse(rawJson);
+        // Suporte a wrapper "customFieldsData"
+        parsed = rawParsed.customFieldsData || rawParsed;
       } catch (e) {
         console.error('[IA] JSON inválido — campos não serão alterados:', e.message);
         return Promise.resolve(data);

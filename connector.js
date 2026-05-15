@@ -77,7 +77,9 @@ async function processIaCard(t) {
 
     let customFieldsData;
     try {
-      customFieldsData = JSON.parse(rawJson);
+      const parsed = JSON.parse(rawJson);
+      // Suporte a wrapper "customFieldsData" (comum em saídas de IA)
+      customFieldsData = parsed.customFieldsData || parsed;
     } catch (parseErr) {
       // FAIL-SAFE: JSON inválido → loga e aborta SEM limpar a descrição
       // (preserva os dados originais para nova tentativa manual)
